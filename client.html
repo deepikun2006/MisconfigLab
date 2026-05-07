@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MisconfigLab Client Portal</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Orbitron:wght@700;900&family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --blue: #5B93F9;
+      --blue-light: #8baaf0;
+      --blue-dim: rgba(91, 147, 249, 0.15);
+      --blue-border: rgba(91, 147, 249, 0.35);
+      --coral: #ff4444;
+      --teal: #14b8a6;
+      --yellow: #f59e0b;
+
+      body {
+        font-family: 'Outfit', sans-serif;
+        background: #0d1117;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      .fw-bold {
+        font-family: 'Space Grotesk', sans-serif;
+        letter-spacing: -0.5px;
+      }
+
+      .text-blue {
+        color: var(--blue) !important;
+      }
+
+      .text-coral {
+        color: var(--coral) !important;
+      }
+
+
+      .sidebar {
+        height: 100vh;
+        background: #0d1117;
+        position: fixed;
+        width: 280px;
+        padding-top: 24px;
+        z-index: 100;
+      }
+
+      .sidebar-brand {
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 900;
+        font-size: 1.25rem;
+        color: #ffffff;
+        padding: 0 24px;
+        margin-bottom: 32px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      .sidebar-brand i {
+        color: var(--blue);
+        font-size: 1.1rem;
+      }
+
+      .sidebar a {
+        display: flex;
+        align-items: center;
+        padding: 14px 24px;
+        color: #d1d5db;
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: all 0.2s;
+        border-left: 3px solid transparent;
+      }
+
+      .sidebar a i {
+        width: 24px;
+        font-size: 1.05rem;
+      }
+
+      .sidebar a:hover,
+      .sidebar a.active {
+        background: rgba(91, 147, 249, 0.05);
+        color: #ffffff;
+        border-left-color: var(--blue);
+      }
+
+      .sidebar hr {
+        border-color: rgba(255, 255, 255, 0.1);
+        margin: 20px 0;
+      }
+
+
+      .main {
+        margin-left: 280px;
+        padding: 40px 50px;
+        background: #eef2f6;
+        min-height: 100vh;
+        border-top-left-radius: 32px;
+        border-bottom-left-radius: 32px;
+      }
+
+      .main-container {
+        max-width: 1750px;
+        margin: 0 auto;
+      }
+
+
+      .card {
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(15, 23, 42, 0.04);
+        background: #ffffff;
+        overflow: hidden;
+      }
+
+      .curved-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+        overflow: hidden;
+      }
+
+
+      .audit-list-header {
+        font-size: 0.85rem;
+        font-weight: 700;
+        font-family: 'Space Grotesk', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #475569;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 2px solid #f1f5f9;
+        padding-bottom: 10px;
+      }
+
+      .audit-item {
+        padding: 1rem 0;
+        border-bottom: 1px solid #f1f5f9;
+      }
+
+      .audit-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+
+      .audit-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        font-family: 'Space Grotesk', sans-serif;
+        color: #0f172a;
+        margin-bottom: 4px;
+      }
+
+      .audit-desc {
+        font-size: 0.85rem;
+        color: #64748b;
+        line-height: 1.5;
+        margin: 0;
+      }
+
+
+      .scan-badge-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+      }
+
+      .scan-type-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        background: #0f172a;
+        border: 1px solid #1e293b;
+        border-radius: 6px;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: #f8fafc;
+      }
+
+      .badge-ecommerce {
+        border-left: 3px solid var(--blue);
+      }
+
+      .badge-ecommerce i {
+        color: var(--blue);
+      }
+
+      .badge-general {
+        border-left: 3px solid var(--coral);
+      }
+
+      .badge-general i {
+        color: var(--coral);
+      }
+
+      .scan-meta {
+        font-family: 'Fira Code', monospace;
+        font-size: 0.65rem;
+        color: #64748b;
+        margin-left: 2px;
+        letter-spacing: 0.3px;
+      }
+
+      .scan-meta span {
+        color: #475569;
+        font-weight: 600;
+      }
+
+      .badge-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 100px;
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+      }
+
+      .status-completed {
+        background: var(--blue-dim);
+        color: var(--blue);
+        border: 1px solid var(--blue-border);
+      }
+
+      .status-pending {
+        background: #f1f5f9;
+        color: #64748b;
+        border: 1px solid #cbd5e1;
+      }
+
+      .status-scanning {
+        background: rgba(91, 147, 249, 0.12);
+        color: var(--blue);
+        border: 1px solid rgba(91, 147, 249, 0.3);
+        box-shadow: 0 0 10px rgba(91, 147, 249, 0.15);
+      }
+
+
+      .badge-prio {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 0.78rem;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        min-width: 90px;
+        background: #e0e7ff;
+        color: #0f172a;
+        border: 1px solid #a5b4fc;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+        transition: all 0.3s ease;
+        cursor: default;
+      }
+
+
+      .badge-prio.prio-critical:hover {
+        box-shadow: 0 0 14px rgba(220, 38, 38, 0.4);
+        border-color: rgba(220, 38, 38, 0.6);
+        color: #dc2626;
+      }
+
+      .badge-prio.prio-high:hover {
+        box-shadow: 0 0 15px rgba(255, 68, 68, 0.5);
+        border-color: rgba(255, 68, 68, 0.7);
+        color: var(--coral);
+      }
+
+      .badge-prio.prio-medium:hover {
+        box-shadow: 0 0 14px rgba(234, 179, 8, 0.4);
+        border-color: rgba(234, 179, 8, 0.6);
+        color: #ca8a04;
+      }
+
+      .badge-prio.prio-low:hover {
+        box-shadow: 0 0 14px rgba(15, 118, 110, 0.4);
+        border-color: rgba(15, 118, 110, 0.6);
+        color: var(--teal);
+      }
+
+
+      .btn-blue {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        background: #6c9aee;
+        color: #0f172a;
+        font-weight: 600;
+        font-size: 0.95rem;
+        font-family: 'Outfit', sans-serif;
+        padding: 10px 20px;
+        border-radius: 9px;
+        border: none;
+        text-decoration: none;
+        letter-spacing: 0.3px;
+        transition: all 0.25s;
+        box-shadow: 0 4px 14px rgba(108, 154, 238, 0.35);
+        cursor: pointer;
+      }
+
+      .btn-blue:hover {
+        background: #84aef5;
+        color: #000000;
+        box-shadow: 0 6px 20px rgba(108, 154, 238, 0.5);
+        transform: translateY(-1px);
+      }
+
+
+      .btn-learn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #0f172a;
+        color: #a4bdf6;
+        font-size: 0.75rem;
+        font-weight: 700;
+        font-family: 'Space Grotesk', sans-serif;
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: 1px solid #0f172a;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.2s ease;
+      }
+
+      .btn-learn:hover {
+        background: #000000;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+
+      .horizontal-bar-chart {
+        position: relative;
+        height: 240px;
+        margin-top: 20px;
+        padding: 10px 45px 30px 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .h-grid-lines {
+        position: absolute;
+        top: 10px;
+        bottom: 30px;
+        left: 80px;
+        right: 45px;
+        display: flex;
+        justify-content: space-between;
+        pointer-events: none;
+        border-bottom: 2px solid #cbd5e1;
+      }
+
+      .h-grid-line {
+        border-left: 1px dashed #e2e8f0;
+        position: relative;
+      }
+
+      .h-grid-line:first-child {
+        border-left: 1px solid #cbd5e1;
+      }
+
+      .h-grid-line span {
+        position: absolute;
+        bottom: -24px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.65rem;
+        color: #64748b;
+        font-family: 'Fira Code', monospace;
+        font-weight: 600;
+      }
+
+      .h-grid-line:first-child span {
+        left: 0;
+        transform: translateX(-50%);
+      }
+
+      .h-grid-line:last-child span {
+        left: auto;
+        right: 0;
+        transform: translateX(50%);
+      }
+
+      .h-bars-container {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        height: 100%;
+      }
+
+      .h-bar-row {
+        position: relative;
+        width: 100%;
+        display: flex;
+        align-items: center;
+      }
+
+      .h-bar-label {
+        position: absolute;
+        left: -80px;
+        width: 70px;
+        text-align: right;
+        font-size: 0.8rem;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+      }
+
+      .h-bar-item {
+        height: 24px;
+        border-radius: 0 4px 4px 0;
+        background: #0f172a;
+        border: 2px solid transparent;
+        border-left: none;
+        position: relative;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        min-width: 4px;
+      }
+
+      .h-bar-item::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 0 4px 0 0;
+      }
+
+      .h-bar-item:hover {
+        transform: scaleY(1.1) translateX(2px);
+        filter: brightness(1.2);
+      }
+
+      .h-bar-value {
+        position: absolute;
+        right: -28px;
+        font-size: 0.85rem;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        color: #0f172a;
+      }
+
+
+      .chart-bar-critical {
+        border-color: #be123c;
+        box-shadow: 0 0 12px rgba(190, 18, 60, 0.5), inset 0 0 8px rgba(190, 18, 60, 0.3);
+      }
+
+      .chart-text-critical {
+        color: #dc2626;
+      }
+
+      .chart-bar-high {
+        border-color: var(--coral);
+        box-shadow: 0 0 12px rgba(255, 68, 68, 0.5), inset 0 0 8px rgba(255, 68, 68, 0.3);
+      }
+
+      .chart-text-high {
+        color: var(--coral);
+      }
+
+      .chart-bar-medium {
+        border-color: var(--yellow);
+        box-shadow: 0 0 12px rgba(245, 158, 11, 0.5), inset 0 0 8px rgba(245, 158, 11, 0.3);
+      }
+
+      .chart-text-medium {
+        color: var(--yellow);
+      }
+
+      .chart-bar-low {
+        border-color: var(--blue-light);
+        box-shadow: 0 0 12px rgba(139, 170, 240, 0.5), inset 0 0 8px rgba(139, 170, 240, 0.3);
+      }
+
+      .chart-text-low {
+        color: var(--blue-light);
+      }
+
+
+      .dist-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 50px;
+        height: 200px;
+        width: 100%;
+      }
+
+      .modern-donut {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      .modern-donut::after {
+        content: '';
+        position: absolute;
+        inset: 16px;
+        background: #ffffff;
+        border-radius: 50%;
+      }
+
+      .modern-donut-inner {
+        position: absolute;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .inner-num {
+        font-size: 2.3rem;
+        font-weight: 700;
+        color: #0f172a;
+        line-height: 1;
+        margin-bottom: 2px;
+        font-family: 'Space Grotesk', sans-serif;
+      }
+
+      .inner-label {
+        font-size: 0.65rem;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+      }
+
+      .modern-legend {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .m-legend-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 110px;
+      }
+
+      .m-legend-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #475569;
+      }
+
+      .m-legend-val {
+        font-size: 0.95rem;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 600;
+        color: #0f172a;
+      }
+
+      .m-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+
+      .mid-row-widget {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+        overflow: hidden;
+        margin-bottom: 2rem;
+      }
+
+      .widget-header {
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 20px 24px;
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .widget-body {
+        background: #f8fafc;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        height: 100%;
+      }
+
+
+      .sc-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 18px;
+        border-radius: 10px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.01);
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      .sc-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.04);
+      }
+
+      .sc-item.trusted {
+        border-left: 4px solid var(--blue);
+      }
+
+      .sc-item.warning {
+        border-left: 4px solid #f59e0b;
+      }
+
+      .sc-item.danger {
+        border-left: 4px solid var(--coral);
+        background: linear-gradient(90deg, #fff5f5, #ffffff 15%);
+        border-color: #fca5a5;
+      }
+
+      .sc-info {
+        flex: 1;
+        margin-left: 16px;
+      }
+
+      .sc-domain {
+        display: block;
+        font-family: 'Fira Code', monospace;
+        font-size: 0.9rem;
+        color: #0f172a;
+        font-weight: 600;
+        margin-bottom: 2px;
+      }
+
+      .sc-type {
+        font-size: 0.8rem;
+        color: #64748b;
+        font-weight: 500;
+      }
+
+      .sc-item.danger .sc-domain {
+        color: #b91c1c;
+      }
+
+
+      .posture-score-container {
+        text-align: center;
+        margin-bottom: 20px;
+        transition: color 0.3s ease;
+      }
+
+      .posture-score-container h2 {
+        font-size: 3.5rem;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: -2px;
+        line-height: 1;
+      }
+
+      .posture-score-container p {
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-top: 8px;
+        font-family: 'Space Grotesk', sans-serif;
+      }
+
+      .posture-req-item {
+        margin-bottom: 12px;
+      }
+
+      .posture-req-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .posture-req-header {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+        transition: color 0.3s ease;
+      }
+
+      .posture-req-header span:last-child {
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        font-size: 1.05rem;
+      }
+
+      .posture-progress {
+        height: 8px;
+        background: #e2e8f0;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .posture-progress-bar {
+        height: 100%;
+        border-radius: 10px;
+        transition: width 1s ease, background 0.3s ease;
+      }
+
+
+
+      .badge-custom-success {
+        background: var(--blue-dim);
+        color: var(--blue);
+        border: 1px solid var(--blue-border);
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        font-family: 'Space Grotesk', sans-serif;
+        text-transform: uppercase;
+      }
+
+      .badge-custom-warning {
+        background: #fef3c7;
+        color: #92400e;
+        border: 1px solid #fde68a;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        font-family: 'Space Grotesk', sans-serif;
+        text-transform: uppercase;
+      }
+
+      .badge-custom-danger {
+        background: #fff5f5;
+        color: var(--coral);
+        border: 1px solid var(--coral);
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        font-size: 0.75rem;
+        font-family: 'Space Grotesk', sans-serif;
+        text-transform: uppercase;
+      }
+
+
+      .custom-list-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+      }
+
+      .custom-list-table thead th {
+        background: #f8fafc;
+        color: #475569;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 12px 24px;
+        font-family: 'Space Grotesk', sans-serif;
+      }
+
+      .custom-list-table tbody tr {
+        background: #ffffff;
+        transition: background 0.2s;
+      }
+
+      .custom-list-table tbody tr:hover {
+        background: #f8fafc;
+      }
+
+      .custom-list-table tbody td {
+        padding: 14px 24px;
+        vertical-align: middle;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .custom-list-table tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      .action-group {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        gap: 4px !important;
+        flex-direction: row !important;
+      }
+
+      .action-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 34px !important;
+        height: 34px !important;
+        border-radius: 7px !important;
+        border: 1px solid #e2e8f0 !important;
+        background: #f8fafc !important;
+        font-size: 14px !important;
+        color: #64748b !important;
+        text-decoration: none !important;
+        transition: all 0.2s !important;
+      }
+
+      .action-btn i {
+        pointer-events: none;
+      }
+
+      .action-btn-findings:hover {
+        background: rgba(91, 147, 249, 0.08) !important;
+        border-color: rgba(91, 147, 249, 0.35) !important;
+        color: var(--blue) !important;
+      }
+
+      .action-btn-report:hover {
+        background: rgba(22, 163, 74, 0.08) !important;
+        border-color: rgba(22, 163, 74, 0.35) !important;
+        color: #16a34a !important;
+      }
+
+      .action-divider {
+        width: 1px !important;
+        height: 20px !important;
+        background: #e2e8f0 !important;
+        margin: 0 6px !important;
+        display: block !important;
+      }
+  </style>
+</head>
+
+<body>
+
+  <div class="sidebar">
+    <div class="sidebar-brand">
+      <i class="fas fa-shield-alt"></i> MisconfigLab
+    </div>
+    <a href="/client" class="active"><i class="fas fa-gauge-high"></i> Dashboard</a>
+    <a href="{{ url_for('request_scan') }}"><i class="fas fa-paper-plane"></i> Request Scan</a>
+    <a href="/client/findings"><i class="fas fa-bug"></i> Findings</a>
+    <a href="/learning-center"><i class="fas fa-graduation-cap"></i> Learning Center</a>
+    <hr>
+    <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </div>
+
+  <div class="main">
+    <div class="main-container">
+
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold m-0" style="color: #0f172a;">Digital Retail Risk Dashboard</h3>
+        <span class="text-muted fw-medium" style="font-size: 1.05rem;">
+          <i class="fas fa-user-circle me-2 text-blue"></i>{{ current_user.username }}
+        </span>
+      </div>
+
+      <div class="card mb-4 border-0">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0 text-dark fw-bold">Security Audits</h5>
+            <a href="{{ url_for('request_scan') }}" class="btn-blue">
+              <i class="fas fa-paper-plane"></i>Queue New Scan
+            </a>
+          </div>
+          <p class="text-muted mb-4">
+            Run specialized audits to detect misconfigurations that expose your storefront to Magecart skimming, API
+            data leaks, and compliance violations.
+          </p>
+
+          <div class="row g-5 mt-2">
+
+            <div class="col-md-6">
+              <div class="audit-list-header">
+                <i class="fas fa-shopping-cart text-blue"></i> E-COMMERCE SCANS
+              </div>
+              <div class="audit-item">
+                <div class="audit-title">Payment & Checkout</div>
+                <p class="audit-desc">Detects digital skimming (Magecart) and ensures payment forms meet strict PCI-DSS
+                  v4.0 compliance standards to protect customer credit card data.</p>
+              </div>
+              <div class="audit-item">
+                <div class="audit-title">Customer Data</div>
+                <p class="audit-desc">Scans for exposed PII (Personally Identifiable Information) and unauthenticated
+                  API endpoints that could leak sensitive user records and order histories.</p>
+              </div>
+              <div class="audit-item">
+                <div class="audit-title">Admin Panel</div>
+                <p class="audit-desc">Evaluates authentication strength, checking for bypassed MFA, weak default
+                  credentials, and insecure role-based access controls on backend portals.</p>
+              </div>
+              <div class="audit-item">
+                <div class="audit-title">Cart & API</div>
+                <p class="audit-desc">Analyzes business logic, CORS misconfigurations, and rate-limiting flaws that
+                  could allow inventory manipulation, price tampering, or data scraping.</p>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="audit-list-header">
+                <i class="fas fa-server text-coral"></i> GENERAL INFRASTRUCTURE
+              </div>
+              <div class="audit-item">
+                <div class="audit-title">Full Web Application Scan</div>
+                <p class="audit-desc">A comprehensive, deep-dive vulnerability assessment covering OWASP Top 10 risks,
+                  injection flaws, and cross-site scripting across your entire application.</p>
+              </div>
+              <div class="audit-item">
+                <div class="audit-title">WordPress Misconfiguration Scan</div>
+                <p class="audit-desc">Identifies outdated plugins, insecure theme settings, exposed configuration files
+                  (<code
+                    style="color:#0f172a; font-family: 'Fira Code', monospace; font-size: 0.8rem;">wp-config.php</code>),
+                  and common CMS-specific security flaws.</p>
+              </div>
+              <div class="audit-item">
+                <div class="audit-title">SSL/TLS Configuration Audit</div>
+                <p class="audit-desc">Verifies HTTPS implementation, certificate validity, and enforces strong
+                  encryption protocols to prevent man-in-the-middle data interception.</p>
+              </div>
+              <div class="audit-item">
+                <div class="audit-title">Docker / Container Environment Scan</div>
+                <p class="audit-desc">Inspects containerized environments for exposed daemons, insecure volume mounts,
+                  outdated images, and dangerous container escape vulnerabilities.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      {% set fc = chart_critical | default(0) | int %}
+      {% set fh = chart_high | default(0) | int %}
+      {% set fm = chart_medium | default(0) | int %}
+      {% set fl = chart_low | default(0) | int %}
+      {% set fmax = [fc, fh, fm, fl]|max %}
+      {% set fmax_scale = (fmax + (5 - fmax % 5)) if fmax % 5 != 0 else fmax %}
+      {% if fmax_scale < 10 %}{% set fmax_scale=10 %}{% endif %} {% set ftotal=fc + fh + fm + fl %} <div
+        class="row mb-4">
+        <div class="col-md-4">
+          <div class="card p-2 border-0">
+            <div class="card-body">
+              <h6 class="text-muted text-uppercase fw-bold"
+                style="font-size: 0.8rem; font-family: 'Space Grotesk', sans-serif;">Total Scans</h6>
+              <h3 class="fw-bold text-dark m-0">{{ requests|length }}</h3>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-2 border-0">
+            <div class="card-body">
+              <h6 class="text-muted text-uppercase fw-bold"
+                style="font-size: 0.8rem; font-family: 'Space Grotesk', sans-serif;">Completed Scans</h6>
+              <h3 class="fw-bold text-dark m-0">{{ requests|selectattr('status', 'equalto', 'Completed')|list|length }}
+              </h3>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-2 border-0">
+            <div class="card-body">
+              <h6 class="text-muted text-uppercase fw-bold"
+                style="font-size: 0.8rem; font-family: 'Space Grotesk', sans-serif;">Pending Requests</h6>
+              <h3 class="fw-bold text-dark m-0">{{ pending_count }}</h3>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    {% if ftotal > 0 %}
+    <div class="row mb-4">
+      <div class="col-md-7">
+        <div class="card h-100 border-0">
+          <div class="card-body p-4 pb-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="mb-0 fw-bold text-dark">Severity Breakdown</h6>
+              <span class="text-muted small">Across all completed scans</span>
+            </div>
+
+            <div class="horizontal-bar-chart mt-4">
+              <div class="h-grid-lines">
+                <div class="h-grid-line"><span>0</span></div>
+                <div class="h-grid-line"><span>{{ (fmax_scale * 0.25) | int }}</span></div>
+                <div class="h-grid-line"><span>{{ (fmax_scale * 0.5) | int }}</span></div>
+                <div class="h-grid-line"><span>{{ (fmax_scale * 0.75) | int }}</span></div>
+                <div class="h-grid-line"><span>{{ fmax_scale }}</span></div>
+              </div>
+              <div class="h-bars-container">
+                <div class="h-bar-row">
+                  <div class="h-bar-label chart-text-critical">Critical</div>
+                  <div class="h-bar-item chart-bar-critical" style="width: {{ (fc / fmax_scale) * 100 }}%;">
+                    <span class="h-bar-value">{{ fc }}</span>
+                  </div>
+                </div>
+                <div class="h-bar-row">
+                  <div class="h-bar-label chart-text-high">High</div>
+                  <div class="h-bar-item chart-bar-high" style="width: {{ (fh / fmax_scale) * 100 }}%;">
+                    <span class="h-bar-value">{{ fh }}</span>
+                  </div>
+                </div>
+                <div class="h-bar-row">
+                  <div class="h-bar-label chart-text-medium">Medium</div>
+                  <div class="h-bar-item chart-bar-medium" style="width: {{ (fm / fmax_scale) * 100 }}%;">
+                    <span class="h-bar-value">{{ fm }}</span>
+                  </div>
+                </div>
+                <div class="h-bar-row">
+                  <div class="h-bar-label chart-text-low">Low</div>
+                  <div class="h-bar-item chart-bar-low" style="width: {{ (fl / fmax_scale) * 100 }}%;">
+                    <span class="h-bar-value">{{ fl }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="card h-100 border-0">
+          <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="mb-0 fw-bold text-dark">Distribution</h6>
+              <span class="text-muted small">By severity</span>
+            </div>
+            {% set p_crit = ((fc/ftotal)*360)|int if ftotal > 0 else 0 %}
+            {% set p_high = ((fh/ftotal)*360)|int if ftotal > 0 else 0 %}
+            {% set p_med = ((fm/ftotal)*360)|int if ftotal > 0 else 0 %}
+            {% set p_low = 360 - p_crit - p_high - p_med if ftotal > 0 else 360 %}
+            <div class="dist-container">
+              <div class="modern-donut" {% if ftotal> 0 %}
+                style="background:conic-gradient(#dc2626 0deg {{ p_crit }}deg, #f97316 {{ p_crit }}deg {{ p_crit+p_high
+                }}deg, #FFDE21 {{ p_crit+p_high }}deg {{ p_crit+p_high+p_med }}deg, var(--blue) {{ p_crit+p_high+p_med
+                }}deg 360deg);"
+                {% else %}
+                style="background: #e2e8f0;"
+                {% endif %}
+                >
+                <div class="modern-donut-inner">
+                  <span class="inner-num">{{ ftotal }}</span>
+                  <span class="inner-label">TOTAL</span>
+                </div>
+              </div>
+              <div class="modern-legend">
+                <div class="m-legend-item">
+                  <div class="m-legend-left"><span class="m-dot" style="background:#dc2626;"></span> Critical</div>
+                  <div class="m-legend-val">{{ fc }}</div>
+                </div>
+                <div class="m-legend-item">
+                  <div class="m-legend-left"><span class="m-dot" style="background:#f97316;"></span> High</div>
+                  <div class="m-legend-val">{{ fh }}</div>
+                </div>
+                <div class="m-legend-item">
+                  <div class="m-legend-left"><span class="m-dot" style="background:#FFDE21;"></span> Medium</div>
+                  <div class="m-legend-val">{{ fm }}</div>
+                </div>
+                <div class="m-legend-item">
+                  <div class="m-legend-left"><span class="m-dot" style="background:var(--blue);"></span> Low</div>
+                  <div class="m-legend-val">{{ fl }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="supply-chain-module mb-4">
+      <div class="sc-header d-flex flex-column align-items-start gap-2">
+        <div class="w-100 d-flex justify-content-between align-items-start">
+          <div style="position: relative; z-index: 2;">
+            <h5 class="mb-1 text-dark fw-bold"><i class="fas fa-project-diagram text-blue me-2"></i> Supply Chain
+              Monitor</h5>
+            <p class="text-muted mb-0" style="font-size: 0.9rem;">DOM analysis of 3rd-party scripts on <code
+                style="color:var(--blue); font-family: 'Fira Code', monospace;">/checkout</code>.</p>
+          </div>
+          <div style="position: relative; z-index: 2; display: flex; align-items: center; gap: 12px;">
+            <a href="/learning-center" class="btn-learn"><i class="fas fa-book-open"></i> Learn More</a>
+            <span class="badge badge-custom-danger"><i class="fas fa-exclamation-triangle me-1"></i> 1 Risk</span>
+          </div>
+        </div>
+        <div class="p-3 mt-1 w-100 rounded"
+          style="background: rgba(91, 147, 249, 0.08); border: 1px solid rgba(91, 147, 249, 0.2);">
+          <p class="mb-0" style="font-size: 0.88rem; color: #475569; line-height: 1.6;">
+            <i class="fas fa-info-circle text-blue me-1"></i> <strong>What is Supply Chain Monitoring?</strong>
+            E-commerce checkouts load external vendor scripts. If a vendor is hacked, malicious code (Magecart) is
+            injected into your site to silently steal customer credit cards.
+          </p>
+        </div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-item trusted">
+          <i class="fas fa-shield-check" style="color: var(--blue); font-size: 1.4rem;"></i>
+          <div class="sc-info">
+            <span class="sc-domain">js.stripe.com/v3/</span>
+            <span class="sc-type">Payment Gateway · Signature Verified</span>
+          </div>
+          <span class="badge badge-custom-success">Trusted</span>
+        </div>
+        <div class="sc-item warning">
+          <i class="fas fa-info-circle" style="color: #f59e0b; font-size: 1.4rem;"></i>
+          <div class="sc-info">
+            <span class="sc-domain">connect.facebook.net/en_US/fbevents.js</span>
+            <span class="sc-type">Marketing Pixel · Exceeds strict CSP policy</span>
+          </div>
+          <span class="badge badge-custom-warning">Review Required</span>
+        </div>
+        <div class="sc-item danger">
+          <i class="fas fa-skull-crossbones" style="color: var(--coral); font-size: 1.4rem;"></i>
+          <div class="sc-info">
+            <span class="sc-domain">cdn-static-assets-analytics.io/track.js</span>
+            <span class="sc-type text-danger fw-semibold">Magecart Risk · High probability of Digital Skimming</span>
+          </div>
+          <span class="badge badge-custom-danger">Critical Risk</span>
+        </div>
+      </div>
+    </div>
+
+    {% set pci = namespace(req3=100, req6=100, req8=100) %}
+    {% set priv = namespace(api=100, db=100, auth=100) %}
+
+    {% set all_findings = [] %}
+    {% if recent_findings is defined and recent_findings %}{% for f in recent_findings %}{% set _ =
+    all_findings.append(f) %}{% endfor %}{% endif %}
+    {% if client_findings is defined and client_findings %}{% for f in client_findings %}{% set _ =
+    all_findings.append(f) %}{% endfor %}{% endif %}
+    {% if findings is defined and findings %}{% for f in findings %}{% set _ = all_findings.append(f) %}{% endfor %}{%
+    endif %}
+
+    {% if all_findings | length > 0 %}
+    {% for f in all_findings %}
+    {% set weight = 30 if f.severity == 'Critical' else (20 if f.severity == 'High' else (10 if f.severity == 'Medium'
+    else 5)) %}
+    {% set iss = (f.issue | default(f.title | default(f.name | default('')))) | lower %}
+
+    {% if 'req 3' in iss or 'pii' in iss or 'data' in iss %}{% set pci.req3 = pci.req3 - weight %}{% endif %}
+    {% if 'req 6' in iss or 'cve' in iss or 'header' in iss or 'version' in iss %}{% set pci.req6 = pci.req6 - weight
+    %}{% endif %}
+    {% if 'req 8' in iss or 'mfa' in iss or 'unauth' in iss or 'login' in iss %}{% set pci.req8 = pci.req8 - weight %}{%
+    endif %}
+
+    {% if 'api' in iss or 'pii' in iss or 'data' in iss or 'endpoint' in iss %}{% set priv.api = priv.api - weight %}{%
+    endif %}
+    {% if 'sql' in iss or 'database' in iss or 'port' in iss or 'exposure' in iss %}{% set priv.db = priv.db - weight
+    %}{% endif %}
+    {% if 'auth' in iss or 'mfa' in iss or 'credential' in iss or 'session' in iss %}{% set priv.auth = priv.auth -
+    weight %}{% endif %}
+    {% endfor %}
+    {% else %}
+    {% set weight_crit = fc * 12 %}
+    {% set weight_high = fh * 8 %}
+    {% set weight_med = fm * 3 %}
+    {% set total_penalty = weight_crit + weight_high + weight_med %}
+
+    {% if total_penalty > 0 %}
+    {% set pci.req3 = pci.req3 - (total_penalty * 0.0) | int %}
+    {% set pci.req6 = pci.req6 - (total_penalty * 1.15) | int %}
+    {% set pci.req8 = pci.req8 - (total_penalty * 0.46) | int %}
+
+    {% set priv.api = priv.api - (total_penalty * 0.0) | int %}
+    {% set priv.db = priv.db - (total_penalty * 0.15) | int %}
+    {% set priv.auth = priv.auth - (total_penalty * 0.46) | int %}
+    {% endif %}
+    {% endif %}
+
+    {% set r3 = [pci.req3, 0] | max %}
+    {% set r6 = [pci.req6, 0] | max %}
+    {% set r8 = [pci.req8, 0] | max %}
+    {% set pci_total = ((r3 + r6 + r8) / 3) | int %}
+    {% set pci_status_color = "var(--blue)" if pci_total == 100 else "var(--coral)" %}
+    {% set pci_status_text = "COMPLIANT" if pci_total == 100 else "NEEDS ATTENTION" %}
+
+    {% set pv_api = [priv.api, 0] | max %}
+    {% set pv_db = [priv.db, 0] | max %}
+    {% set pv_auth = [priv.auth, 0] | max %}
+    {% set priv_total = ((pv_api + pv_db + pv_auth) / 3) | int %}
+    {% set priv_status_color = "var(--teal)" if priv_total == 100 else "var(--coral)" %}
+    {% set priv_status_text = "SECURED" if priv_total == 100 else "VULNERABLE" %}
+
+    <div class="row mb-4">
+
+      <div class="col-xl-6">
+        <div class="mid-row-widget h-100 mb-0 pci-header">
+          <div class="widget-header d-flex flex-column align-items-start gap-2">
+            <div class="w-100" style="position: relative; z-index: 2;">
+              <h5 class="mb-1 text-dark fw-bold"><i class="fas fa-certificate text-blue me-2"></i> PCI-DSS v4.0 Posture
+              </h5>
+              <p class="text-muted mb-1" style="font-size: 0.85rem;">Compliance readiness based on current scan data.
+              </p>
+
+              <div class="p-3 mt-3 w-100 rounded"
+                style="background: rgba(91, 147, 249, 0.08); border: 1px solid rgba(91, 147, 249, 0.2);">
+                <p class="mb-0" style="font-size: 0.88rem; color: #475569; line-height: 1.6;">
+                  <i class="fas fa-info-circle text-blue me-1"></i> <strong>What is PCI-DSS?</strong> Mandatory for
+                  processing credit cards. Non-compliance risks severe fines and loss of payment processing
+                  capabilities.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="widget-body pt-3">
+            <div class="posture-score-container">
+              <h2 style="color: #0f172a;">{{ pci_total }}<span style="font-size: 1.5rem;">%</span></h2>
+              <p style="color: {{ pci_status_color }};">{{ pci_status_text }}</p>
+            </div>
+            <div class="pci-req-list">
+              {% set c3_bar = "var(--teal)" if r3 == 100 else ("var(--yellow)" if r3 >= 50 else "var(--coral)") %}
+              <div class="posture-req-item">
+                <div class="posture-req-header" style="color: #0f172a;">
+                  <div class="d-flex flex-column">
+                    <span style="font-size: 1.05rem; font-weight: 700;">Req 3: Protect Account Data</span>
+                    <span style="font-size: 0.9rem; color: #475569; font-weight: 600; margin-top: 2px;">(Encryption,
+                      proper storage, avoiding PII leaks)</span>
+                  </div>
+                  <span style="color: #0f172a;">{{ r3 }}%</span>
+                </div>
+                <div class="posture-progress">
+                  <div class="posture-progress-bar" style="background: {{ c3_bar }}; width: {{ r3 }}%;"></div>
+                </div>
+              </div>
+
+              {% set c6_bar = "var(--teal)" if r6 == 100 else ("var(--yellow)" if r6 >= 50 else "var(--coral)") %}
+              <div class="posture-req-item">
+                <div class="posture-req-header" style="color: #0f172a;">
+                  <div class="d-flex flex-column">
+                    <span style="font-size: 1.05rem; font-weight: 700;">Req 6: Secure Systems & Software</span>
+                    <span style="font-size: 0.9rem; color: #475569; font-weight: 600; margin-top: 2px;">(Patching CVEs,
+                      secure headers, server hardening)</span>
+                  </div>
+                  <span style="color: #0f172a;">{{ r6 }}%</span>
+                </div>
+                <div class="posture-progress">
+                  <div class="posture-progress-bar" style="background: {{ c6_bar }}; width: {{ r6 }}%;"></div>
+                </div>
+              </div>
+
+              {% set c8_bar = "var(--teal)" if r8 == 100 else ("var(--yellow)" if r8 >= 50 else "var(--coral)") %}
+              <div class="posture-req-item">
+                <div class="posture-req-header" style="color: #0f172a;">
+                  <div class="d-flex flex-column">
+                    <span style="font-size: 1.05rem; font-weight: 700;">Req 8: Identify Users & Access</span>
+                    <span style="font-size: 0.9rem; color: #475569; font-weight: 600; margin-top: 2px;">(Enforcing MFA,
+                      strict admin authentication)</span>
+                  </div>
+                  <span style="color: #0f172a;">{{ r8 }}%</span>
+                </div>
+                <div class="posture-progress">
+                  <div class="posture-progress-bar" style="background: {{ c8_bar }}; width: {{ r8 }}%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-6">
+        <div class="mid-row-widget h-100 mb-0 pii-header" style="border-top: 3px solid var(--teal);">
+          <div class="widget-header d-flex flex-column align-items-start gap-2">
+            <div class="w-100" style="position: relative; z-index: 2;">
+              <h5 class="mb-1 text-dark fw-bold"><i class="fas fa-users-viewfinder me-2"
+                  style="color: var(--teal);"></i> Customer PII & Privacy Shield</h5>
+              <p class="text-muted mb-1" style="font-size: 0.85rem;">Risk assessment of customer data exfiltration.</p>
+
+              <div class="p-3 mt-3 w-100 rounded"
+                style="background: rgba(0, 128, 128, 0.08); border: 1px solid rgba(0, 128, 128, 0.2);">
+                <p class="mb-0" style="font-size: 0.88rem; color: #475569; line-height: 1.6;">
+                  <i class="fas fa-info-circle me-1" style="color: var(--teal);"></i> <strong>Why track Privacy
+                    Risk?</strong> Unauthenticated APIs or exposed databases can leak your entire customer list (PII,
+                  order history). This destroys brand trust and triggers GDPR/CCPA fines.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="widget-body pt-3">
+
+            <div class="posture-score-container">
+              <h2 style="color: #0f172a;">{{ priv_total }}<span style="font-size: 1.5rem;">%</span></h2>
+              <p style="color: {{ priv_status_color }};">{{ priv_status_text }}</p>
+            </div>
+
+            <div class="pci-req-list">
+              {% set pa_bar = "var(--teal)" if pv_api == 100 else ("var(--yellow)" if pv_api >= 50 else "var(--coral)")
+              %}
+              <div class="posture-req-item">
+                <div class="posture-req-header" style="color: #0f172a;">
+                  <div class="d-flex flex-column">
+                    <span style="font-size: 1.05rem; font-weight: 700;">API Endpoint Protection</span>
+                    <span style="font-size: 0.9rem; color: #475569; font-weight: 600; margin-top: 2px;">(Blocking
+                      unauthorized scraping of customer lists/orders)</span>
+                  </div>
+                  <span style="color: #0f172a;">{{ pv_api }}%</span>
+                </div>
+                <div class="posture-progress">
+                  <div class="posture-progress-bar" style="background: {{ pa_bar }}; width: {{ pv_api }}%;"></div>
+                </div>
+              </div>
+
+              {% set pdb_bar = "var(--teal)" if pv_db == 100 else ("var(--yellow)" if pv_db >= 50 else "var(--coral)")
+              %}
+              <div class="posture-req-item">
+                <div class="posture-req-header" style="color: #0f172a;">
+                  <div class="d-flex flex-column">
+                    <span style="font-size: 1.05rem; font-weight: 700;">Backend Storage Integrity</span>
+                    <span style="font-size: 0.9rem; color: #475569; font-weight: 600; margin-top: 2px;">(Closing open
+                      database ports, securing cloud buckets)</span>
+                  </div>
+                  <span style="color: #0f172a;">{{ pv_db }}%</span>
+                </div>
+                <div class="posture-progress">
+                  <div class="posture-progress-bar" style="background: {{ pdb_bar }}; width: {{ pv_db }}%;"></div>
+                </div>
+              </div>
+
+              {% set pauth_bar = "var(--teal)" if pv_auth == 100 else ("var(--yellow)" if pv_auth >= 50 else
+              "var(--coral)") %}
+              <div class="posture-req-item">
+                <div class="posture-req-header" style="color: #0f172a;">
+                  <div class="d-flex flex-column">
+                    <span style="font-size: 1.05rem; font-weight: 700;">Account Takeover (ATO) Defense</span>
+                    <span style="font-size: 0.9rem; color: #475569; font-weight: 600; margin-top: 2px;">(Rate limiting
+                      logins, enforcing session cookies)</span>
+                  </div>
+                  <span style="color: #0f172a;">{{ pv_auth }}%</span>
+                </div>
+                <div class="posture-progress">
+                  <div class="posture-progress-bar" style="background: {{ pauth_bar }}; width: {{ pv_auth }}%;"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="curved-card mt-5 mb-5">
+      <div class="bg-white pt-4 pb-0 px-4 d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="mb-1 text-dark fw-bold">My Scan Requests</h5>
+          <span class="text-muted small" style="font-family: 'Outfit', sans-serif; font-weight: 500;">{{ requests|length
+            }} request{{ 's' if requests|length != 1 else '' }} submitted</span>
+        </div>
+      </div>
+
+      <div class="p-0 mt-3">
+        <div class="table-responsive">
+          <table class="table table-hover custom-list-table">
+            <thead>
+              <tr>
+                <th class="ps-4">Scan Type</th>
+                <th>Target</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Completed Time</th>
+                <th class="text-end pe-4" style="text-transform: uppercase;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for req in requests %}
+              <tr>
+                <td class="ps-4">
+                  {% set t = req.template|lower %}
+                  {% set icon = "fas fa-globe text-coral" %}
+                  {% set focus = "Ports · Headers" %}
+                  {% set b_class = "badge-general" %}
+                  {% set title = req.template | title %}
+
+                  {% if "payment & checkout" in t %}
+                  {% set icon = "fas fa-credit-card text-blue" %}
+                  {% set focus = "PCI DSS · TLS · CSP" %}
+                  {% set b_class = "badge-ecommerce" %}
+                  {% set title = "Payment & Checkout" %}
+                  {% elif "customer data" in t %}
+                  {% set icon = "fas fa-users-viewfinder text-blue" %}
+                  {% set focus = "PII Leaks · Unauth APIs" %}
+                  {% set b_class = "badge-ecommerce" %}
+                  {% set title = "Customer Data" %}
+                  {% elif "admin panel" in t %}
+                  {% set icon = "fas fa-user-shield text-blue" %}
+                  {% set focus = "MFA · Access Control" %}
+                  {% set b_class = "badge-ecommerce" %}
+                  {% set title = "Admin Panel" %}
+                  {% elif "cart & api" in t %}
+                  {% set icon = "fas fa-cart-shopping text-blue" %}
+                  {% set focus = "Rate Limits · CORS" %}
+                  {% set b_class = "badge-ecommerce" %}
+                  {% set title = "Cart & API" %}
+                  {% elif "wordpress" in t %}
+                  {% set icon = "fab fa-wordpress text-coral" %}
+                  {% set focus = "Plugins · wp-config" %}
+                  {% set b_class = "badge-general" %}
+                  {% set title = "WordPress" %}
+                  {% elif "docker" in t %}
+                  {% set icon = "fab fa-docker text-coral" %}
+                  {% set focus = "Escapes · Daemons" %}
+                  {% set b_class = "badge-general" %}
+                  {% set title = "Docker Container" %}
+                  {% elif "ssl tls" in t %}
+                  {% set icon = "fas fa-lock text-coral" %}
+                  {% set focus = "Cryptography · Certificates" %}
+                  {% set b_class = "badge-general" %}
+                  {% set title = "SSL/TLS" %}
+                  {% endif %}
+
+                  <div class="scan-badge-wrap">
+                    <div class="scan-type-badge {{ b_class }}">
+                      <i class="{{ icon }}"></i> {{ title }}
+                    </div>
+                    <div class="scan-meta"><span>Focus:</span> {{ focus }}</div>
+                  </div>
+                </td>
+                <td class="fw-semibold text-dark" style="font-family:'Fira Code',monospace; font-size:0.85rem;">
+                  {{ req.target }}
+                </td>
+                <td>
+                  {% set p_lower = req.priority|lower %}
+                  {% if p_lower == "critical" %}
+                  <span class="badge-prio prio-critical">Critical</span>
+                  {% elif p_lower == "high" %}
+                  <span class="badge-prio prio-high">High</span>
+                  {% elif p_lower == "medium" %}
+                  <span class="badge-prio prio-medium">Medium</span>
+                  {% else %}
+                  <span class="badge-prio prio-low">{{ req.priority }}</span>
+                  {% endif %}
+                </td>
+                <td id="status-{{ req.id }}">
+                  {% if req.status == "Completed" %}
+                  <span class="badge-status status-completed"><i class="fas fa-check-circle"></i> Completed</span>
+                  {% elif req.status == "Scan In Progress" %}
+                  <span class="badge-status status-scanning"><span class="dot"></span> Scanning...</span>
+                  {% else %}
+                  <span class="badge-status status-pending"><i class="fas fa-clock"></i> Pending</span>
+                  {% endif %}
+                </td>
+                <td class="text-nowrap text-muted small fw-medium">
+                  {% if req.status == "Completed" and req.completed_at %}
+                  <i class="far fa-clock me-1"></i> {{ req.completed_at.strftime('%b %d, %Y - %I:%M %p') }}
+                  {% else %}
+                  -
+                  {% endif %}
+                </td>
+                <td class="pe-4 text-end" id="action-{{ req.id }}">
+                  {% if req.status == "Completed" %}
+                  <div class="action-group">
+                    <a href="{{ url_for('client_view_findings', req_id=req.id) }}"
+                      class="action-btn action-btn-findings" title="View Findings">
+                      <i class="fas fa-eye"></i>
+                    </a>
+                    <div class="action-divider"></div>
+                    <a href="{{ url_for('client_view_report', req_id=req.id) }}" class="action-btn action-btn-report"
+                      title="View Report">
+                      <i class="fas fa-file-alt"></i>
+                    </a>
+                  </div>
+                  {% else %}
+                  <div class="text-muted small" style="font-family:'Fira Code',monospace;">awaiting</div>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+
+              {% if requests|length == 0 %}
+              <tr>
+                <td colspan="6" class="text-center text-muted py-5">
+                  <i class="fas fa-inbox fs-3 mb-3 opacity-50 d-block"></i>
+                  No scan requests yet. <br>
+                  <a href="{{ url_for('request_scan') }}"
+                    class="text-blue text-decoration-none fw-semibold mt-2 d-inline-block">Request your first scan</a>
+                </td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</body>
+
+</html>

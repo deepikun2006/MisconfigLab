@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Reports | MisconfigLab</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+
+      --blue: #3b82f6;
+      --blue-light: #eff6ff;
+      --enterprise-blue: #2563eb;
+      --enterprise-blue-hover: #1d4ed8;
+
+
+      --bg-dark: #0f172a;
+      --bg-app: #f8fafc;
+    }
+
+    body {
+      font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+      background: var(--bg-dark);
+
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      color: #334155;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .fw-bold {
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+
+    .sidebar {
+      height: 100vh;
+      background: var(--bg-dark);
+      color: white;
+      position: fixed;
+      width: 280px;
+      padding-top: 32px;
+      z-index: 100;
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .sidebar-brand {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 1.35rem;
+      color: #ffffff;
+      padding: 0 24px;
+      margin-bottom: 40px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .sidebar-brand i {
+      font-size: 1.2rem;
+      color: var(--blue);
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      padding: 14px 24px;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+      margin-bottom: 4px;
+    }
+
+    .sidebar a i {
+      width: 28px;
+      font-size: 1.05rem;
+    }
+
+    .sidebar a:hover {
+      background: rgba(255, 255, 255, 0.03);
+      color: #e2e8f0;
+    }
+
+    .sidebar a.active {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--blue);
+      border-left-color: var(--blue);
+      font-weight: 600;
+    }
+
+    .sidebar hr {
+      border-color: rgba(255, 255, 255, 0.08);
+      margin: 24px 0;
+    }
+
+
+    .main {
+      margin-left: 280px;
+      padding: 48px 56px;
+      background: var(--bg-app);
+      min-height: 100vh;
+      border-top-left-radius: 32px;
+      border-bottom-left-radius: 32px;
+    }
+
+    .main-container {
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+
+    .curved-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      overflow: hidden;
+    }
+
+    .card-header-enterprise {
+      background: #ffffff;
+      border-bottom: 1px solid #f1f5f9;
+      padding: 24px 32px;
+    }
+
+
+    .custom-list-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0;
+    }
+
+    .custom-list-table thead th {
+      background: #f8fafc;
+      color: #64748b;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid #e2e8f0;
+      border-top: 1px solid #e2e8f0;
+      padding: 16px 32px;
+    }
+
+    .custom-list-table tbody tr {
+      background: #ffffff;
+      transition: background 0.2s ease;
+    }
+
+    .custom-list-table tbody tr:hover {
+      background: #f8fafc;
+    }
+
+    .custom-list-table tbody td {
+      padding: 20px 32px;
+      vertical-align: middle;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .custom-list-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+
+    .action-group {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-end !important;
+      gap: 12px !important;
+      flex-direction: row !important;
+    }
+
+
+    .action-btn-icon {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 36px !important;
+      height: 36px !important;
+      border-radius: 8px !important;
+      border: 1px solid #e2e8f0 !important;
+      background: #ffffff !important;
+      font-size: 14px !important;
+      color: #64748b !important;
+      text-decoration: none !important;
+      transition: all 0.2s ease !important;
+    }
+
+    .action-btn-icon:hover {
+      background: #f1f5f9 !important;
+      border-color: #cbd5e1 !important;
+      color: #0f172a !important;
+      transform: translateY(-1px);
+    }
+
+
+    .btn-enterprise {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #ffffff;
+      color: #0f172a !important;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .btn-enterprise:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+      transform: translateY(-1px);
+    }
+
+    .btn-enterprise i {
+      font-size: 0.9rem;
+      color: var(--enterprise-blue);
+    }
+
+
+    .scan-badge-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+
+    .scan-type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .scan-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: #64748b;
+      margin-left: 2px;
+    }
+
+    .scan-meta span {
+      color: #94a3b8;
+      font-weight: 500;
+      font-size: 0.65rem;
+    }
+
+    .target-mono {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      color: #334155;
+      font-weight: 500;
+    }
+
+
+    .badge-prio {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 12px;
+      border-radius: 9999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .prio-critical {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+
+    .prio-high {
+      background: #fff7ed;
+      color: #c2410c;
+      border: 1px solid #fed7aa;
+    }
+
+    .prio-medium {
+      background: #fefce8;
+      color: #a16207;
+      border: 1px solid #fef08a;
+    }
+
+    .prio-low {
+      background: #f0fdf4;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="sidebar">
+    <div class="sidebar-brand">
+      <i class="fas fa-layer-group"></i> MisconfigLab
+    </div>
+    <a href="/client"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="{{ url_for('request_scan') }}"><i class="fas fa-radar"></i> Request Audit</a>
+    <a href="/client/findings"><i class="fas fa-code-branch"></i> Findings</a>
+    <a href="/client/reports" class="active"><i class="fas fa-file-invoice"></i> Reports</a>
+    <a href="/learning-center"><i class="fas fa-book-open"></i> Learning Center</a>
+    <hr>
+    <a href="/logout"><i class="fas fa-arrow-right-from-bracket"></i> Logout</a>
+  </div>
+
+  <div class="main">
+    <div class="main-container">
+
+      <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+          <h3 class="fw-bold m-0" style="color: #0f172a;">Executive Reports</h3>
+          <p class="text-muted mt-1 mb-0" style="font-size: 0.95rem; font-weight: 400;">Compliance documentation and
+            risk assessments.</p>
+        </div>
+        <span class="fw-bold px-3 py-2 bg-white border rounded-pill shadow-sm d-flex align-items-center gap-2"
+          style="font-size: 0.9rem; color: #475569;">
+          <div
+            style="width: 24px; height: 24px; background: var(--blue-light); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-user" style="color: var(--enterprise-blue); font-size: 0.7rem;"></i>
+          </div>
+          {{ current_user.username }}
+        </span>
+      </div>
+
+      <div class="curved-card">
+        <div class="card-header-enterprise d-flex justify-content-between align-items-center">
+          <div>
+            <h5 class="mb-1 fw-bold text-dark">Audit History</h5>
+            <p class="text-muted mb-0" style="font-size: 0.9rem; font-weight: 400;">
+              Review completed scans and download PCI-DSS mapped PDFs.
+            </p>
+          </div>
+        </div>
+
+        <div class="p-0">
+          <div class="table-responsive">
+            <table class="table custom-list-table mb-0">
+              <thead>
+                <tr>
+                  <th class="ps-4">Audit Profile</th>
+                  <th>Target Endpoint</th>
+                  <th>Risk Status</th>
+                  <th class="pe-4 text-end">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for req in requests %}
+                <tr>
+                  <td class="ps-4">
+                    <div class="scan-badge-wrap">
+                      {% set t = req.template|lower %}
+                      {% set icon = "fas fa-server text-muted" %}
+                      {% set focus = "Ports · Headers" %}
+                      {% set title = req.template | title %}
+
+                      {% if "payment & checkout" in t %}
+                      {% set icon = "fas fa-credit-card text-primary" %}
+                      {% set focus = "PCI DSS · TLS · CSP" %}
+                      {% set title = "Payment & Checkout" %}
+                      {% elif "customer data" in t %}
+                      {% set icon = "fas fa-database text-primary" %}
+                      {% set focus = "PII Leaks · Unauth APIs" %}
+                      {% set title = "Customer Data" %}
+                      {% elif "admin panel" in t %}
+                      {% set icon = "fas fa-shield-halved text-primary" %}
+                      {% set focus = "MFA · Access Control" %}
+                      {% set title = "Admin Panel" %}
+                      {% elif "cart & api" in t %}
+                      {% set icon = "fas fa-shopping-cart text-primary" %}
+                      {% set focus = "Rate Limits · CORS" %}
+                      {% set title = "Cart & API" %}
+                      {% elif "wordpress" in t %}
+                      {% set icon = "fab fa-wordpress text-muted" %}
+                      {% set focus = "Plugins · wp-config" %}
+                      {% set title = "WordPress" %}
+                      {% elif "docker" in t %}
+                      {% set icon = "fab fa-docker text-muted" %}
+                      {% set focus = "Escapes · Daemons" %}
+                      {% set title = "Docker Container" %}
+                      {% elif "ssl tls" in t %}
+                      {% set icon = "fas fa-lock text-muted" %}
+                      {% set focus = "Cryptography · Certificates" %}
+                      {% set title = "SSL/TLS" %}
+                      {% endif %}
+
+                      <div class="scan-type-badge">
+                        <i class="{{ icon }}"></i> {{ title }}
+                      </div>
+                      <div class="scan-meta"><span>//</span> {{ focus }}</div>
+                    </div>
+                  </td>
+                  <td class="target-mono">
+                    {{ req.target }}
+                  </td>
+
+                  <td>
+                    {% set p_lower = req.priority|lower %}
+                    {% if p_lower == "critical" %}
+                    <span class="badge-prio prio-critical">Critical</span>
+                    {% elif p_lower == "high" %}
+                    <span class="badge-prio prio-high">High</span>
+                    {% elif p_lower == "medium" %}
+                    <span class="badge-prio prio-medium">Medium</span>
+                    {% else %}
+                    <span class="badge-prio prio-low">{{ req.priority }}</span>
+                    {% endif %}
+                  </td>
+                  <td class="pe-4 text-end">
+                    <div class="action-group">
+                      <a href="{{ url_for('client_view_findings', req_id=req.id) }}" class="action-btn-icon"
+                        title="View Details">
+                        <i class="fas fa-code"></i>
+                      </a>
+
+                      <a href="{{ url_for('client_view_report', req_id=req.id) }}" class="btn-enterprise"
+                        title="Download PDF">
+                        <i class="fas fa-file-pdf"></i> Report
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+
+                {% if requests|length == 0 %}
+                <tr>
+                  <td colspan="4" class="text-center py-5">
+                    <div class="p-5 rounded mx-auto" style="max-width: 450px;">
+                      <i class="fas fa-folder-open mb-3" style="color: #cbd5e1; font-size: 2.5rem;"></i>
+                      <h6 class="fw-bold text-dark mb-2">No Reports Generated</h6>
+                      <p class="text-muted small mb-4">Run your first security audit to generate compliance
+                        documentation.</p>
+                      <a href="{{ url_for('request_scan') }}" class="btn-enterprise"
+                        style="background: var(--enterprise-blue); border-color: var(--enterprise-blue); color: white !important;">
+                        <i class="fas fa-plus" style="color: white;"></i> New Audit
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+
+</html>

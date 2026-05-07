@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clients | MisconfigLab</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Orbitron:wght@700;900&family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --blue: #5B93F9; 
+  --blue-light: #a4bdf6;
+  --blue-dim: rgba(91, 147, 249, 0.15);
+  --blue-border: rgba(91, 147, 249, 0.35);
+  --coral: #ff4444; 
+  --teal: #0f766e;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: #0d1117; 
+}
+
+h1, h2, h3, h4, h5, h6, .fw-bold {
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: -0.5px;
+}
+
+.text-blue { color: var(--blue) !important; }
+.text-coral { color: var(--coral) !important; }
+
+
+.sidebar {
+  height: 100vh;
+  background: #0d1117;
+  color: white;
+  position: fixed;
+  width: 280px; 
+  padding-top: 24px;
+  z-index: 100;
+}
+
+.sidebar-brand {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  font-size: 1.25rem;
+  color: var(--blue);
+  padding: 0 24px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.sidebar-brand i { font-size: 1.1rem; }
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  padding: 14px 24px;
+  color: #d1d5db;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
+}
+
+.sidebar a i { width: 24px; font-size: 1.05rem; }
+
+.sidebar a:hover, .sidebar a.active {
+  background: rgba(91, 147, 249, 0.05);
+  color: #ffffff;
+  border-left-color: var(--blue);
+}
+
+.sidebar hr { border-color: rgba(255,255,255,0.1); margin: 20px 0; }
+
+
+.main {
+  margin-left: 280px; 
+  padding: 40px 50px;
+  background: #eef2f6; 
+  min-height: 100vh;
+  border-top-left-radius: 32px;
+  border-bottom-left-radius: 32px;
+}
+
+.main-container {
+  max-width: 1750px; 
+  margin: 0 auto;
+}
+
+.card {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(15, 23, 42, 0.04); 
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.curved-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px; 
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+  overflow: hidden; 
+}
+
+
+.scan-badge-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+.scan-type-badge { 
+  display: inline-flex; align-items: center; gap: 8px; 
+  padding: 6px 14px; 
+  background: #0f172a; 
+  border: 1px solid #1e293b; 
+  border-radius: 6px; 
+  font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem; font-weight: 600; 
+  color: #ffffff; 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.badge-ecommerce { border-left: 4px solid var(--blue); }
+.badge-ecommerce i { color: var(--blue); }
+.badge-general { border-left: 4px solid var(--coral); }
+.badge-general i { color: var(--coral); }
+.scan-meta { font-family: 'Fira Code', monospace; font-size: 0.65rem; color: #64748b; margin-left: 2px; letter-spacing: 0.3px; }
+.scan-meta span { color: #475569; font-weight: 600; }
+
+
+.badge-status {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 100px;
+  font-family: 'Outfit', sans-serif; font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.status-completed { background: var(--blue-dim); color: #0f172a; border: 1px solid var(--blue-border); }
+.status-pending { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
+.status-scanning { 
+  background: rgba(91, 147, 249, 0.12); color: var(--blue); 
+  border: 1px solid rgba(91, 147, 249, 0.3); box-shadow: 0 0 10px rgba(91, 147, 249, 0.15);
+}
+.status-scanning .dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--blue);
+  animation: pulse-blue 1.5s infinite;
+}
+@keyframes pulse-blue {
+  0% { box-shadow: 0 0 0 0 rgba(91, 147, 249, 0.4); }
+  70% { box-shadow: 0 0 0 4px rgba(91, 147, 249, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(91, 147, 249, 0); }
+}
+
+
+.badge-prio {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  border-radius: 6px; 
+  font-size: 0.78rem; 
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 90px;
+  background: #e0e7ff; 
+  color: #0f172a; 
+  border: 1px solid #a5b4fc; 
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.badge-prio.prio-critical:hover {
+  box-shadow: 0 0 14px rgba(220, 38, 38, 0.4);
+  border-color: rgba(220, 38, 38, 0.6);
+  color: #dc2626;
+}
+.badge-prio.prio-high {
+  color: #0f172a;
+  border-color: #a5b4fc;
+}
+.badge-prio.prio-high:hover {
+  box-shadow: 0 0 18px rgba(255, 68, 68, 0.6); 
+  border-color: rgba(255, 68, 68, 0.8);
+  color: var(--coral);
+}
+.badge-prio.prio-medium:hover {
+  box-shadow: 0 0 14px rgba(234, 179, 8, 0.4);
+  border-color: rgba(234, 179, 8, 0.6);
+  color: #ca8a04;
+}
+.badge-prio.prio-low:hover {
+  box-shadow: 0 0 14px rgba(15, 118, 110, 0.4);
+  border-color: rgba(15, 118, 110, 0.6);
+  color: var(--teal);
+}
+
+.custom-list-table { width: 100%; border-collapse: collapse; margin: 0; }
+.custom-list-table thead th { background: #f8fafc; color: #475569; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e2e8f0; padding: 12px 24px; font-family: 'Space Grotesk', sans-serif;}
+.custom-list-table tbody tr { background: #ffffff; transition: background 0.2s; }
+.custom-list-table tbody tr:hover { background: #f8fafc; }
+.custom-list-table tbody td { padding: 14px 24px; vertical-align: middle; border-bottom: 1px solid #e2e8f0; }
+
+.action-group { display:flex; align-items:center; gap:4px; justify-content: flex-end;}
+.action-btn { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:7px; border:1px solid #e2e8f0; background:#f8fafc; font-size:12px; text-decoration:none; transition:all 0.2s; color:#64748b; }
+.action-btn-run:hover { background:rgba(22,163,74,0.08); border-color:rgba(22,163,74,0.35); color:#16a34a; }
+.action-btn-findings:hover { background:rgba(2,132,199,0.08); border-color:rgba(2,132,199,0.35); color:#0284c7; }
+.action-btn-report:hover { background:rgba(99,102,241,0.08); border-color:rgba(99,102,241,0.35); color:#6366f1; }
+.action-divider { width:1px; height:20px; background:#e2e8f0; margin:0 4px; }
+
+.notes-cell {
+  max-width: 200px;
+  font-size: 0.85rem;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <i class="fas fa-shield-alt text-blue"></i> MisconfigLab
+  </div>
+  <a href="/admin"><i class="fas fa-gauge-high"></i> Dashboard</a>
+  <a href="/findings"><i class="fas fa-bug"></i> Findings</a>
+  <a href="/clients" class="active"><i class="fas fa-store"></i> Clients</a>
+  <hr>
+  <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</div>
+
+<div class="main">
+  <div class="main-container">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h3 class="fw-bold m-0" style="color: #0f172a;">Merchant Audit Requests</h3>
+        <p class="text-muted mb-0" style="font-size:0.95rem;">
+          Manage and execute security assessments requested by your clients.
+        </p>
+      </div>
+      <span class="text-muted fw-medium" style="font-size: 1.05rem;">
+        <i class="fas fa-user-circle me-2 text-blue"></i>{{ current_user.username }}
+      </span>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="card p-2 border-0">
+          <div class="card-body">
+            <h6 class="text-muted text-uppercase fw-bold" style="font-size: 0.85rem;">Total Requests</h6>
+            <h3 class="fw-bold text-dark mb-0">{{ requests|length }}</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card p-2 border-0">
+          <div class="card-body">
+            <h6 class="text-muted text-uppercase fw-bold" style="font-size: 0.85rem;">Pending Audits</h6>
+            <h3 class="fw-bold text-dark mb-0" style="color: #64748b !important;">{{ requests|selectattr('status','equalto','Pending')|list|length }}</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card p-2 border-0">
+          <div class="card-body">
+            <h6 class="text-muted text-uppercase fw-bold" style="font-size: 0.85rem;">In Progress</h6>
+            <h3 class="fw-bold text-blue mb-0">{{ requests|selectattr('status','equalto','Scan In Progress')|list|length }}</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card p-2 border-0">
+          <div class="card-body">
+            <h6 class="text-muted text-uppercase fw-bold" style="font-size: 0.85rem;">Completed</h6>
+            <h3 class="fw-bold mb-0" style="color: #059669;">{{ requests|selectattr('status','equalto','Completed')|list|length }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="curved-card mb-4">
+      <div class="bg-white pt-4 pb-0 px-4 d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="mb-1 text-dark fw-bold">Audit Request Ledger</h5>
+          <span class="text-muted small">All client-submitted security requests</span>
+        </div>
+      </div>
+
+      <div class="p-0 mt-3">
+        <div class="table-responsive">
+          <table class="table table-hover custom-list-table">
+            <thead>
+              <tr>
+                <th class="ps-4">Merchant</th>
+                <th>Storefront Target</th>
+                <th>Audit Type</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Notes</th>
+                <th class="text-end pe-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for req in requests %}
+              <tr>
+                <td class="ps-4">
+                   <div class="d-flex align-items-center gap-2">
+                      <div style="width:32px;height:32px;background:#f1f5f9;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#64748b; border: 1px solid #e2e8f0;">
+                        <i class="fas fa-store fa-sm"></i>
+                      </div>
+                      <span class="fw-semibold text-dark">{{ req.client_username }}</span>
+                   </div>
+                </td>
+                
+                <td class="fw-semibold text-dark" style="font-family:'Fira Code',monospace; font-size:0.85rem;">
+                  {{ req.target }}
+                </td>
+
+                <td>
+                  {% set t = req.template|lower %}
+                  {% set icon = "fas fa-globe text-coral" %}
+                  {% set focus = "Ports · Headers" %}
+                  {% set b_class = "badge-general" %}
+                  {% set title = req.template | title %}
+                  
+                  {% if "payment & checkout" in t %}
+                    {% set icon = "fas fa-credit-card text-blue" %}
+                    {% set focus = "PCI DSS · TLS · CSP" %}
+                    {% set b_class = "badge-ecommerce" %}
+                    {% set title = "Payment & Checkout" %}
+                  {% elif "customer data" in t %}
+                    {% set icon = "fas fa-users-viewfinder text-blue" %}
+                    {% set focus = "PII Leaks · Unauth APIs" %}
+                    {% set b_class = "badge-ecommerce" %}
+                    {% set title = "Customer Data" %}
+                  {% elif "admin panel" in t %}
+                    {% set icon = "fas fa-user-shield text-blue" %}
+                    {% set focus = "MFA · Access Control" %}
+                    {% set b_class = "badge-ecommerce" %}
+                    {% set title = "Admin Panel" %}
+                  {% elif "cart & api" in t %}
+                    {% set icon = "fas fa-cart-shopping text-blue" %}
+                    {% set focus = "Rate Limits · CORS" %}
+                    {% set b_class = "badge-ecommerce" %}
+                    {% set title = "Cart & API" %}
+                  {% elif "wordpress" in t %}
+                    {% set icon = "fab fa-wordpress text-coral" %}
+                    {% set focus = "Plugins · wp-config" %}
+                    {% set b_class = "badge-general" %}
+                    {% set title = "WordPress" %}
+                  {% elif "docker" in t %}
+                    {% set icon = "fab fa-docker text-coral" %}
+                    {% set focus = "Escapes · Daemons" %}
+                    {% set b_class = "badge-general" %}
+                    {% set title = "Docker Container" %}
+                  {% elif "ssl tls" in t %}
+                    {% set icon = "fas fa-lock text-coral" %}
+                    {% set focus = "Cryptography · Certificates" %}
+                    {% set b_class = "badge-general" %}
+                    {% set title = "SSL/TLS" %}
+                  {% endif %}
+
+                  <div class="scan-badge-wrap">
+                    <div class="scan-type-badge {{ b_class }}">
+                      <i class="{{ icon }}"></i> {{ title }}
+                    </div>
+                    <div class="scan-meta"><span>Focus:</span> {{ focus }}</div>
+                  </div>
+                </td>
+
+                <td>
+                  {% set p_lower = req.priority|lower %}
+                  {% if p_lower == "critical" %}
+                    <span class="badge-prio prio-critical">Critical</span>
+                  {% elif p_lower == "high" %}
+                    <span class="badge-prio prio-high">High</span>
+                  {% elif p_lower == "medium" %}
+                    <span class="badge-prio prio-medium">Medium</span>
+                  {% else %}
+                    <span class="badge-prio prio-low">{{ req.priority }}</span>
+                  {% endif %}
+                </td>
+
+                <td id="status-{{ req.id }}">
+                  {% if req.status == "Completed" %}
+                  <span class="badge-status status-completed"><i class="fas fa-check-circle"></i> Completed</span>
+                  {% elif req.status == "Scan In Progress" %}
+                  <span class="badge-status status-scanning"><span class="dot"></span> Scanning...</span>
+                  {% else %}
+                  <span class="badge-status status-pending"><i class="fas fa-clock"></i> Pending</span>
+                  {% endif %}
+                </td>
+
+                <td>
+                  {% if req.description and req.description.strip() %}
+                    <span class="notes-cell" title="{{ req.description }}">{{ req.description }}</span>
+                  {% else %}
+                    <span style="color:#cbd5e1; font-family:'Fira Code',monospace; font-size:0.75rem;">None</span>
+                  {% endif %}
+                </td>
+
+                <td class="pe-4">
+                  <div class="action-group">
+                    <a href="{{ url_for('run_scan', req_id=req.id) }}"
+                       class="action-btn action-btn-run" title="Execute Audit">
+                      <i class="fas fa-play"></i>
+                    </a>
+                    
+                    {% if req.status == "Completed" %}
+                    <div class="action-divider"></div>
+                    <a href="{{ url_for('view_findings', req_id=req.id) }}"
+                       class="action-btn action-btn-findings" title="View Findings">
+                      <i class="fas fa-eye"></i>
+                    </a>
+                    <a href="{{ url_for('generate_report', req_id=req.id) }}"
+                       class="action-btn action-btn-report" title="Generate Report">
+                      <i class="fas fa-file-alt"></i>
+                    </a>
+                    {% endif %}
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+
+              {% if requests|length == 0 %}
+              <tr>
+                <td colspan="7" class="text-center text-muted py-5">
+                  <i class="fas fa-inbox fs-3 mb-3 opacity-50 d-block"></i>
+                  No merchant requests have been submitted yet.
+                </td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div> 
+</div> 
+</body>
+</html>

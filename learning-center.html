@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learning Center - MisconfigLab</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Orbitron:wght@700;900&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root {
+  --blue: #779deb; 
+  --blue-light: #a4bdf6;
+  --blue-dim: rgba(119, 157, 235, 0.15);
+  --coral: #ff6f61; 
+  --bg-dark: #0d1117;
+  --panel-dark: #111827;
+  --green: #4ade80;
+  --red: #dc2626; 
+  --orange: #ea580c;
+  --amber: #f59e0b;
+  --slate: #64748b;
+  --yellow: #FFDE21;
+  --purple: #a855f7;
+}
+
+body {
+  font-family: 'Inter', sans-serif; 
+  background: #eef2f6; 
+}
+
+
+.main {
+  font-family: 'Outfit', sans-serif;
+}
+
+.main h1, .main h2, .main h3, .main h4, .main h5, .main h6, .main .fw-bold {
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: -0.3px;
+}
+
+.main p, .main .text-muted, .lc-desc, .feed-content p {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.05rem;
+}
+
+
+.feed-time, .scm-node-title, .legend-pct {
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+
+.sidebar {
+  font-family: 'Inter', sans-serif; 
+  height: 100vh;
+  background: var(--bg-dark);
+  color: white;
+  position: fixed;
+  width: 280px; 
+  padding-top: 24px;
+  z-index: 100;
+}
+.sidebar-brand {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  font-size: 1.25rem;
+  color: var(--blue);
+  padding: 0 24px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.sidebar a {
+  display: flex; align-items: center; padding: 14px 24px; color: #d1d5db;
+  text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: all 0.2s; border-left: 3px solid transparent;
+}
+.sidebar a i { width: 24px; font-size: 1.05rem; }
+.sidebar a:hover, .sidebar a.active { background: rgba(119, 157, 235, 0.05); color: #ffffff; border-left-color: var(--blue); }
+.sidebar hr { border-color: rgba(255,255,255,0.1); margin: 20px 0; }
+
+
+.main {
+  margin-left: 280px; 
+  padding: 40px 50px;
+  min-height: 100vh;
+}
+.main-container { 
+  max-width: 1600px; 
+  margin: 0 auto; 
+}
+
+/* ==============================
+   SUPPLY CHAIN SIMULATOR WIDGET
+   ==============================*/
+.scm-widget {
+  background: var(--panel-dark);
+  border-radius: 20px;
+  color: #e5e7eb;
+  overflow: hidden;
+  margin-bottom: 3rem;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+  border: 1px solid #374151;
+}
+.scm-header { padding: 30px 40px; display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #1f2937; }
+.scm-title-wrap h4 { font-weight: 700; color: #ffffff; margin-bottom: 8px; font-size: 1.6rem;}
+.scm-title-wrap p { color: #e5e7eb; font-size: 1rem; margin: 0;}
+.scm-metrics { display: flex; gap: 40px;}
+.scm-metric-col { display: flex; flex-direction: column; gap: 6px; text-align: left;}
+.scm-metric-col span:first-child { font-family: 'Inter', sans-serif; font-size: 0.8rem; text-transform: uppercase; color: #9ca3af; letter-spacing: 1.5px; font-weight: 700;}
+.scm-metric-col span:last-child { font-size: 1.15rem; font-weight: 800; color: #ffffff;}
+.scm-canvas { position: relative; height: 550px; display: flex; align-items: center; justify-content: space-between; padding: 0 150px; background: #151a23; }
+#scm-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+.scm-node-area { z-index: 2; display: flex; flex-direction: column; align-items: center; width: 350px; text-align: center; }
+.scm-node-behavior { font-family: 'Inter', sans-serif; border: 1px solid currentColor; padding: 8px 20px; border-radius: 100px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 30px; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); }
+.scm-node { width: 130px; height: 130px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; color: #111827; transition: all 0.4s ease; margin-bottom: 20px; }
+.scm-node-title { font-size: 1.3rem; font-weight: 700; color: #ffffff;}
+.scm-node-type { font-family: 'Inter', sans-serif; font-size: 1rem; color: #9ca3af; margin-top: 4px;}
+.scm-form-area { z-index: 2; display: flex; flex-direction: column; position: relative; }
+.scm-critical-warning { font-family: 'Inter', sans-serif; position: absolute; top: -35px; left: 0; width: 100%; text-align: center; color: #f87171; font-size: 0.9rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0; transition: opacity 0.3s ease; }
+.scm-form-box { background: #111827; border: 1px solid #4b5563; width: 320px; border-radius: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.scm-field { padding: 18px 24px; border-bottom: 1px solid #374151; display: flex; align-items: center; gap: 18px; color: #d1d5db; font-size: 1.1rem; font-weight: 500; transition: all 0.3s ease; background: transparent; }
+.scm-field:last-child { border-bottom: none; }
+.scm-field i { width: 20px; text-align: center; color: #9ca3af; font-size: 1.3rem;}
+.scm-controls { padding: 24px 40px; border-top: 1px solid #1f2937; display: flex; justify-content: space-between; align-items: center; background: #111827; }
+.scm-select { background: #1f2937; color: #ffffff; border: 1px solid #4b5563; padding: 12px 20px; border-radius: 8px; font-family: 'Outfit', sans-serif; font-size: 1.05rem; outline: none; cursor: pointer; min-width: 300px; }
+.scm-btn { background: #1f2937; color: #ffffff; border: 1px solid #4b5563; padding: 12px 30px; border-radius: 8px; font-weight: 600; font-size: 1.05rem; cursor: pointer; transition: background 0.2s; font-family: 'Outfit', sans-serif; }
+.scm-btn:hover { background: #374151; }
+.animated-line { stroke-dasharray: 1000; stroke-dashoffset: 1000; animation: drawLine 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+@keyframes drawLine { to { stroke-dashoffset: 0; } }
+
+
+.stats-widget {
+  background: #ffffff; border-radius: 20px; padding: 40px; border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05); margin-bottom: 3rem;
+}
+.stats-header { margin-bottom: 30px; }
+.stats-header h4 { font-weight: 800; color: #0f172a; }
+.chart-wrapper { position: relative; height: 350px; width: 100%; }
+
+.custom-legend-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px; border-radius: 6px; margin-bottom: 6px;
+  background: transparent; cursor: pointer; transition: all 0.2s;
+  border-left: 3px solid transparent;
+}
+.custom-legend-item:hover, .custom-legend-item.active { 
+  background: #f8fafc; transform: translateX(4px);
+}
+.legend-color-dot {
+  width: 10px; height: 10px; border-radius: 50%; margin-right: 12px;
+}
+.legend-label-wrap { display: flex; align-items: center; flex: 1; font-weight: 600; color: #334155; font-size: 0.95rem; }
+.legend-pct { font-weight: 700; font-size: 0.95rem; }
+
+.dynamic-desc-box {
+  background: #0f172a; color: #f8fafc; padding: 24px; border-radius: 12px;
+  margin-top: 20px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+  border-left: 4px solid var(--blue); transition: all 0.3s ease;
+}
+.dynamic-desc-box h5 { font-weight: 700; margin-bottom: 10px; font-size: 1.1rem; }
+
+
+.threat-feed-widget {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+  overflow: hidden;
+  margin-bottom: 3rem;
+}
+.threat-feed-header {
+  background: #0f172a;
+  color: white;
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.threat-feed-header span { font-family: 'Fira Code', monospace; font-size: 0.75rem; color: #94a3b8; }
+.live-indicator {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 700;
+  color: #f87171; text-transform: uppercase; letter-spacing: 1px;
+}
+.pulse-dot {
+  width: 8px; height: 8px; background-color: #f87171; border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.7); animation: pulse-red 1.5s infinite;
+}
+@keyframes pulse-red {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(248, 113, 113, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(248, 113, 113, 0); }
+}
+.feed-list { max-height: 440px; overflow-y: auto; padding: 0; margin: 0; list-style: none; }
+.feed-list::-webkit-scrollbar { width: 6px; }
+.feed-list::-webkit-scrollbar-track { background: #f1f5f9; }
+.feed-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.feed-item { padding: 20px 30px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 20px; transition: background 0.2s; }
+.feed-item:last-child { border-bottom: none; }
+.feed-item:hover { background: #f8fafc; }
+.feed-time { font-size: 0.75rem; color: #64748b; min-width: 110px; padding-top: 4px; font-weight: 600;}
+.feed-content { flex: 1; }
+.feed-content h6 { font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-bottom: 6px; line-height: 1.4;}
+.feed-tags { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.feed-tag { font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; padding: 4px 8px; border-radius: 4px; letter-spacing: 0.5px; }
+.tag-red { background: rgba(220, 38, 38, 0.1); color: #dc2626; border: 1px solid rgba(220, 38, 38, 0.2); }
+.tag-orange { background: rgba(249, 115, 22, 0.1); color: #ea580c; border: 1px solid rgba(249, 115, 22, 0.2); }
+.tag-blue { background: rgba(119, 157, 235, 0.1); color: #5B93F9; border: 1px solid rgba(119, 157, 235, 0.2); }
+.tag-teal { background: rgba(20, 184, 166, 0.1); color: #0f766e; border: 1px solid rgba(20, 184, 166, 0.2); }
+
+.feed-source-link {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem; font-weight: 600; color: var(--blue);
+  text-decoration: none; transition: color 0.2s;
+  margin-left: auto;
+}
+.feed-source-link:hover { color: #2563eb; text-decoration: underline; }
+
+
+.learning-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 32px; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(15, 23, 42, 0.03); transition: transform 0.2s, box-shadow 0.2s; height: 100%; }
+.learning-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08); }
+.lc-icon { width: 56px; height: 56px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin-bottom: 24px; }
+.lc-title { font-weight: 800; color: #0f172a; margin-bottom: 12px; font-size: 1.25rem;}
+.lc-badge { font-family: 'Inter', sans-serif; display: inline-block; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px; }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <i class="fas fa-shield-alt text-blue"></i> MisconfigLab
+  </div>
+  
+  {% if current_user.role == 'admin' %}
+    <a href="/admin"><i class="fas fa-gauge-high"></i> Dashboard</a>
+    <a href="/findings"><i class="fas fa-bug"></i> Findings</a>
+    <a href="/clients"><i class="fas fa-store"></i> Clients</a>
+    <a href="/learning" class="active"><i class="fas fa-graduation-cap"></i> Learning Center</a>
+  {% else %}
+    <a href="/client"><i class="fas fa-gauge-high"></i> Dashboard</a>
+    <a href="{{ url_for('request_scan') }}"><i class="fas fa-paper-plane"></i> Request Audit</a>
+    <a href="/client/findings"><i class="fas fa-bug"></i> Findings</a>
+    <a href="/learning" class="active"><i class="fas fa-graduation-cap"></i> Learning Center</a>
+  {% endif %}
+  
+  <hr>
+  <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</div>
+
+<div class="main">
+  <div class="main-container">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="fw-bold m-0" style="color: #0f172a;">E-Commerce Security Center</h2>
+        <p class="text-muted mt-2 mb-0">Understand your threat landscape and how malicious scripts interact with your DOM.</p>
+      </div>
+    </div>
+
+    <div class="scm-widget">
+      <div class="scm-header">
+        <div class="scm-title-wrap">
+          <h4>Supply Chain Monitor</h4>
+          <p id="ui-desc">Verified cryptographic signature match.</p>
+        </div>
+        <div class="scm-metrics">
+          <div class="scm-metric-col"><span>Status</span><span id="ui-status">TRUSTED</span></div>
+          <div class="scm-metric-col"><span>Behavior</span><span id="ui-behavior">Normal</span></div>
+          <div class="scm-metric-col"><span>Integrity</span><span id="ui-integrity">Verified</span></div>
+        </div>
+      </div>
+      <div class="scm-canvas" id="canvas-area">
+        <svg id="scm-svg">
+          <defs>
+            <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--green)" /></marker>
+            <marker id="arrow-yellow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--yellow)" /></marker>
+            <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#f87171" /></marker>
+          </defs>
+        </svg>
+        <div class="scm-node-area">
+          <div class="scm-node-behavior" id="node-behavior">BEHAVIOR: NORMAL</div>
+          <div class="scm-node" id="node-circle"><i class="fas fa-lock" id="node-icon"></i></div>
+          <div class="scm-node-title" id="node-title">js.stripe.com/v3/</div>
+          <div class="scm-node-type" id="node-type">Payment Gateway</div>
+        </div>
+        <div class="scm-form-area">
+          <div class="scm-critical-warning" id="critical-warn">CRITICAL: SENSITIVE DATA ACCESS DETECTED</div>
+          <div class="scm-form-box">
+            <div class="scm-field" id="field-name"><i class="far fa-user"></i> Name</div>
+            <div class="scm-field" id="field-email"><i class="fas fa-at"></i> Email</div>
+            <div class="scm-field" id="field-card"><i class="far fa-credit-card"></i> Card Number</div>
+            <div class="scm-field" id="field-cvv"><i class="fas fa-ellipsis-h"></i> CVV</div>
+            <div class="scm-field" id="field-submit"><i class="fas fa-shopping-cart"></i> Submit</div>
+          </div>
+        </div>
+      </div>
+      <div class="scm-controls">
+        <div class="scm-select-wrap">
+          <span style="font-family: 'Inter', sans-serif; color: #9ca3af; font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 6px; text-transform: uppercase;">Select Script to Analyze</span>
+          <select class="scm-select" id="script-selector">
+            <option value="stripe">Stripe Gateway (stripe.com)</option>
+            <option value="ga">Google Analytics (analytics.js)</option>
+            <option value="fb">Facebook Pixel (fbevents.js)</option>
+            <option value="malicious">Magecart Skimmer (track.js)</option>
+          </select>
+        </div>
+        <button class="scm-btn" onclick="runAnalysis()">Rerun Analysis</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="stats-widget h-100">
+          <div class="stats-header">
+            <h4>The Escalation of Attacks (2019-2024)</h4>
+            <p>Observe the exponential rise in supply chain and API breaches over the last five years as retail shifted online.</p>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="threatChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="stats-widget h-100 d-flex flex-column">
+          <div class="stats-header">
+            <h4>Global E-Commerce Attack Distribution</h4>
+            <p>A researched breakdown of the most prevalent attack vectors targeting online retailers.</p>
+          </div>
+          
+          <div class="row flex-grow-1 align-items-center">
+            <div class="col-md-6">
+               <div class="chart-wrapper" style="height: 250px;">
+                 <canvas id="distributionChart"></canvas>
+               </div>
+            </div>
+            <div class="col-md-6">
+               <div id="custom-legend-container"></div>
+            </div>
+          </div>
+          
+          <div class="dynamic-desc-box" id="dynamic-desc">
+            <h5 id="desc-title">Hover over an attack type</h5>
+            <p id="desc-text">Interact with the chart or legend to learn more about specific e-commerce threat vectors and how they compromise your platform.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="threat-feed-widget mt-4">
+      <div class="threat-feed-header">
+        <div>
+          <h5 class="mb-1 text-white fw-bold"><i class="fas fa-globe me-2" style="color: var(--blue-light);"></i> Global Threat Intelligence Feed</h5>
+          <span>AGGREGATED INDUSTRY BREACH DATA (LATE 2025 - Q1 2026)</span>
+        </div>
+        <div class="live-indicator">
+          <div class="pulse-dot"></div> LIVE
+        </div>
+      </div>
+
+      <div class="feed-list">
+        <div class="feed-item">
+          <div class="feed-time">LATE MAR 2026</div>
+          <div class="feed-content">
+            <h6>Critical Node.js Vulnerabilities Expose E-Commerce Backends</h6>
+            <p>High-severity flaws (CVE-2026-21637) disclosed in Node.js enable DoS attacks and side-channel data leaks. Retailers running outdated server environments face severe disruption and API exposure.</p>
+            <div class="feed-tags">
+              <span class="feed-tag tag-blue">API Vulnerability</span>
+              <span class="feed-tag tag-teal">Infrastructure</span>
+              <a href="https://nvd.nist.gov/" target="_blank" class="feed-source-link">Read full advisory <i class="fas fa-external-link-alt" style="font-size: 0.7rem;"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="feed-item">
+          <div class="feed-time">LATE JAN 2026</div>
+          <div class="feed-content">
+            <h6>Kaspersky & BitSight Report 43% Surge in Retail Data Sales</h6>
+            <p>Threat intelligence reveals a massive spike in stolen e-commerce data on underground forums in early 2026. The surge is directly attributed to unpatched third-party plugins and new Magecart skimmers targeting Magento.</p>
+            <div class="feed-tags">
+              <span class="feed-tag tag-red">Magecart / Skimming</span>
+              <span class="feed-tag tag-teal">Threat Intel</span>
+              <a href="https://securelist.com/" target="_blank" class="feed-source-link">Read full report <i class="fas fa-external-link-alt" style="font-size: 0.7rem;"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="feed-item">
+          <div class="feed-time">DEC 2025</div>
+          <div class="feed-content">
+            <h6>Retail AI Chatbot Supply Chain Attack Leaks Customer Data</h6>
+            <p>A sophisticated attack on the Salesloft/Drift integrations used by major retailers allowed threat actors to bypass frontend UI and scrape millions of customer records via over-permissioned OAuth tokens.</p>
+            <div class="feed-tags">
+              <span class="feed-tag tag-red">Supply Chain</span>
+              <span class="feed-tag tag-orange">PII Data Leak</span>
+              <a href="https://www.bleepingcomputer.com/" target="_blank" class="feed-source-link">Read news coverage <i class="fas fa-external-link-alt" style="font-size: 0.7rem;"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="feed-item">
+          <div class="feed-time">OCT 2025</div>
+          <div class="feed-content">
+            <h6>Major Source Code Leak Exposes E-Commerce API Keys</h6>
+            <p>Over 570GB of data was exfiltrated from enterprise repositories in a massive Git-related breach. Hardcoded AWS and payment gateway API keys were leaked, forcing hundreds of retailers to rotate credentials.</p>
+            <div class="feed-tags">
+              <span class="feed-tag tag-blue">Infrastructure</span>
+              <span class="feed-tag tag-red">Data Leak</span>
+              <a href="https://techcrunch.com/category/security/" target="_blank" class="feed-source-link">Read news coverage <i class="fas fa-external-link-alt" style="font-size: 0.7rem;"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="feed-item">
+          <div class="feed-time">AUG 2025</div>
+          <div class="feed-content">
+            <h6>Global Retailers Hit by CRM Vishing & Loyalty Program Hacks</h6>
+            <p>A coordinated cybercrime campaign targeted the loyalty programs and CRM instances of global retailers, including Auchan, Chanel, and Pandora. Attackers successfully exfiltrated hundreds of thousands of PII records.</p>
+            <div class="feed-tags">
+              <span class="feed-tag tag-orange">Social Engineering</span>
+              <span class="feed-tag tag-red">PII Data Leak</span>
+              <a href="https://www.darkreading.com/" target="_blank" class="feed-source-link">Read news coverage <i class="fas fa-external-link-alt" style="font-size: 0.7rem;"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h4 class="fw-bold text-dark mb-4 mt-5" style="font-size: 1.5rem;">Core E-Commerce Threats Explained</h4>
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="learning-card">
+          <span class="lc-badge" style="background: #fee2e2; color: #dc2626;">Critical Risk</span>
+          <div class="lc-icon" style="background: rgba(220,38,38,0.1); color: #dc2626;"><i class="fas fa-skull-crossbones"></i></div>
+          <h5 class="lc-title">Digital Skimming (Magecart)</h5>
+          <p class="lc-desc">As visualized above, modern checkouts rely on third-party scripts. If hackers compromise a vendor, they inject code directly into your checkout page. This code silently records credit card numbers and CVVs as customers type them, sending them to the attacker without alerting the user.</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="learning-card">
+          <span class="lc-badge" style="background: #fee2e2; color: #dc2626;">Critical Risk</span>
+          <div class="lc-icon" style="background: rgba(119,157,235,0.1); color: var(--blue);"><i class="fas fa-users-viewfinder"></i></div>
+          <h5 class="lc-title">PII Leaks & API Breaches</h5>
+          <p class="lc-desc">Personally Identifiable Information (PII) must be strictly protected. Vulnerabilities often arise in APIs that return too much background data to the browser, or when endpoints fail to properly verify session authorization. This leads to massive, automated customer data scraping.</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="learning-card">
+          <span class="lc-badge" style="background: #ffedd5; color: #ea580c;">High Risk</span>
+          <div class="lc-icon" style="background: rgba(249,115,22,0.1); color: #ea580c;"><i class="fas fa-credit-card"></i></div>
+          <h5 class="lc-title">PCI DSS Compliance Failures</h5>
+          <p class="lc-desc">The Payment Card Industry Data Security Standard mandates strict rules for merchants handling credit cards. Common failures include missing Multi-Factor Authentication (MFA) on admin panels, storing full card data in logs unnecessarily, or lacking strict Content Security Policies (CSP).</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="learning-card">
+          <span class="lc-badge" style="background: #fef9c3; color: #b48600;">Medium Risk</span>
+          <div class="lc-icon" style="background: rgba(255,222,33,0.2); color: #b48600;"><i class="fas fa-server"></i></div>
+          <h5 class="lc-title">Infrastructure Misconfigurations</h5>
+          <p class="lc-desc">The foundation of your site must be solid. Missing security headers (like HSTS to enforce HTTPS, or X-Frame-Options to prevent Clickjacking) leave the door open for client-side attacks. Running outdated server dependencies exposes you to automated scanning botnets.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ==========================================================================
+// SCRIPT 1: DOM SUPPLY CHAIN SIMULATOR LOGIC
+// ==========================================================================
+const scriptsData = {
+  stripe: {
+    title: 'js.stripe.com/v3/', type: 'Payment Gateway', status: 'TRUSTED', behavior: 'NORMAL', integrity: 'Verified',
+    desc: 'Verified cryptographic signature match.', color: 'var(--green)', icon: 'fas fa-lock',
+    targets: ['card', 'cvv', 'submit'], isMalicious: false
+  },
+  ga: {
+    title: 'google-analytics.com/analytics.js', type: 'Analytics', status: 'TRUSTED', behavior: 'NORMAL', integrity: 'Verified',
+    desc: 'Matches known global integrity hash.', color: 'var(--green)', icon: 'fas fa-chart-line',
+    targets: ['submit'], isMalicious: false
+  },
+  fb: {
+    title: 'connect.facebook.net/fbevents.js', type: 'Marketing Pixel', status: 'WARNING', behavior: 'OVER-PRIVILEGED', integrity: 'Mismatch',
+    desc: 'Attempts to access form fields outside of its sandbox scope.', color: 'var(--yellow)', icon: 'fas fa-exclamation-triangle',
+    targets: ['name', 'email', 'submit'], isMalicious: false
+  },
+  malicious: {
+    title: 'cdn-static-assets-analytics.io/track.js', type: 'Unrecognized Dependency', status: 'DANGER', behavior: 'DATA EXFILTRATION', integrity: 'Failed',
+    desc: 'Keylogging detected: Sending checkout data to a suspicious domain.', color: '#f87171', icon: 'fas fa-bug',
+    targets: ['name', 'email', 'card', 'cvv', 'submit'], isMalicious: true
+  }
+};
+
+const svg = document.getElementById('scm-svg');
+const canvas = document.getElementById('canvas-area');
+const selector = document.getElementById('script-selector');
+
+function resetUI() {
+  svg.querySelectorAll('line').forEach(l => l.remove());
+  document.querySelectorAll('.scm-field').forEach(field => {
+    field.style.border = 'none';
+    field.style.borderBottom = '1px solid #374151';
+    field.style.backgroundColor = 'transparent';
+    field.style.color = '#d1d5db';
+    field.querySelector('i').style.color = '#9ca3af';
+  });
+  document.getElementById('critical-warn').style.opacity = '0';
+}
+
+function runAnalysis() {
+  resetUI();
+  const scriptKey = selector.value;
+  const data = scriptsData[scriptKey];
+
+  document.getElementById('ui-desc').textContent = data.desc;
+  document.getElementById('ui-status').textContent = data.status;
+  document.getElementById('ui-behavior').textContent = data.behavior;
+  document.getElementById('ui-integrity').textContent = data.integrity;
+  document.getElementById('ui-status').style.color = data.color;
+
+  const node = document.getElementById('node-circle');
+  node.style.backgroundColor = data.color;
+  node.style.boxShadow = `0 0 40px ${data.color}60`; 
+  
+  document.getElementById('node-icon').className = data.icon;
+  document.getElementById('node-title').textContent = data.title;
+  document.getElementById('node-type').textContent = data.type;
+  
+  const behaviorBadge = document.getElementById('node-behavior');
+  behaviorBadge.textContent = `BEHAVIOR: ${data.behavior}`;
+  behaviorBadge.style.color = data.color;
+
+  if (data.isMalicious) { document.getElementById('critical-warn').style.opacity = '1'; }
+
+  setTimeout(() => {
+    const canvasRect = canvas.getBoundingClientRect();
+    const nodeRect = node.getBoundingClientRect();
+    const startX = (nodeRect.right - canvasRect.left);
+    const startY = (nodeRect.top - canvasRect.top) + (nodeRect.height / 2);
+
+    data.targets.forEach((targetId, index) => {
+      const field = document.getElementById(`field-${targetId}`);
+      const fieldRect = field.getBoundingClientRect();
+      const endX = (fieldRect.left - canvasRect.left) - 5; 
+      const endY = (fieldRect.top - canvasRect.top) + (fieldRect.height / 2);
+
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', startX); line.setAttribute('y1', startY);
+      line.setAttribute('x2', endX); line.setAttribute('y2', endY);
+      line.setAttribute('stroke', data.color); line.setAttribute('stroke-width', '2.5'); 
+      
+      let markerId = 'arrow-green';
+      if(data.color === 'var(--yellow)') markerId = 'arrow-yellow';
+      if(data.color === '#f87171') markerId = 'arrow-red';
+      line.setAttribute('marker-end', `url(#${markerId})`);
+      
+      line.classList.add('animated-line');
+      line.style.animationDelay = `${index * 0.15}s`;
+      svg.appendChild(line);
+
+      setTimeout(() => {
+        field.style.border = `1px solid ${data.color}`;
+        field.style.backgroundColor = `${data.color}15`; 
+        field.style.color = '#ffffff';
+        field.querySelector('i').style.color = data.color;
+      }, (index * 150) + 500); 
+    });
+  }, 100);
+}
+selector.addEventListener('change', runAnalysis);
+window.onload = runAnalysis;
+
+// ==========================================================================
+// SCRIPT 2: CHARTS LOGIC
+// ==========================================================================
+document.addEventListener('DOMContentLoaded', function() {
+  
+
+  const ctxLine = document.getElementById('threatChart').getContext('2d');
+  new Chart(ctxLine, {
+    type: 'line',
+    data: {
+      labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+      datasets: [
+        { label: 'Supply Chain / Magecart', data: [120, 180, 450, 920, 1600, 2450], borderColor: '#dc2626', backgroundColor: 'rgba(220, 38, 38, 0.1)', borderWidth: 3, fill: true, tension: 0.4 },
+        { label: 'Customer PII / API Breaches', data: [300, 350, 400, 600, 850, 1200], borderColor: '#779deb', backgroundColor: 'rgba(119, 157, 235, 0.1)', borderWidth: 3, fill: true, tension: 0.4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      animation: { duration: 2000, easing: 'easeOutQuart' },
+      interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { position: 'top', labels: { font: { family: 'Inter' }, usePointStyle: true } } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { grid: { borderDash: [5, 5] }, ticks: { callback: function(value) { return value + ' Incidents'; } } }
+      }
+    }
+  });
+
+ 
+  const distData = [
+    { name: 'Credential Stuffing (ATO)', pct: 30, color: '#dc2626', desc: 'Automated bots testing massive lists of stolen usernames and passwords against your login endpoints to perform Account Takeovers.' },
+    { name: 'Digital Skimming', pct: 25, color: '#ea580c', desc: 'Also known as Magecart. Malicious code injected via compromised 3rd-party vendors to steal credit card data directly from the checkout form.' },
+    { name: 'API Exploits', pct: 20, color: '#f59e0b', desc: 'Attackers bypassing frontend UI to manipulate your backend APIs directly, often leading to unauthorized access to customer databases or pricing logic.' },
+    { name: 'Bot Scraping', pct: 15, color: '#3b82f6', desc: 'Aggressive automated traffic designed to hoard inventory, scrape pricing data, or exhaust server resources without causing a full outage.' },
+    { name: 'DDoS Attacks', pct: 10, color: '#64748b', desc: 'Distributed Denial of Service. Overwhelming your servers with garbage traffic during peak sales events to take your store offline.' }
+  ];
+
+  const ctxDoughnut = document.getElementById('distributionChart').getContext('2d');
+  const dChart = new Chart(ctxDoughnut, {
+    type: 'doughnut',
+    data: {
+      labels: distData.map(d => d.name),
+      datasets: [{
+        data: distData.map(d => d.pct),
+        backgroundColor: distData.map(d => d.color),
+        borderWidth: 0,
+        borderRadius: 6,
+        spacing: 4,
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '82%',
+      plugins: {
+        legend: { display: false }, 
+        tooltip: { enabled: false } 
+      },
+      onHover: (event, chartElement) => {
+        if (chartElement.length > 0) {
+          const index = chartElement[0].index;
+          updateDescPanel(index);
+          highlightLegend(index);
+        }
+      }
+    }
+  });
+
+  const legendContainer = document.getElementById('custom-legend-container');
+  distData.forEach((item, index) => {
+    const legItem = document.createElement('div');
+    legItem.className = 'custom-legend-item';
+    legItem.innerHTML = `
+      <div class="legend-label-wrap">
+        <div class="legend-color-dot" style="background: ${item.color};"></div>
+        <span>${item.name}</span>
+      </div>
+      <span class="legend-pct" style="color: ${item.color};">${item.pct}%</span>
+    `;
+    
+  
+    legItem.addEventListener('mouseenter', () => {
+      updateDescPanel(index);
+      highlightLegend(index);
+      dChart.setActiveElements([{datasetIndex: 0, index: index}]);
+      dChart.update();
+    });
+    legItem.addEventListener('mouseleave', () => {
+      dChart.setActiveElements([]);
+      dChart.update();
+    });
+
+    legendContainer.appendChild(legItem);
+  });
+
+
+  const descBox = document.getElementById('dynamic-desc');
+  const descTitle = document.getElementById('desc-title');
+  const descText = document.getElementById('desc-text');
+
+  function updateDescPanel(index) {
+    const data = distData[index];
+    descBox.style.borderLeftColor = data.color;
+    descTitle.style.color = data.color;
+    descTitle.textContent = `${data.name} (${data.pct}%)`;
+    descText.textContent = data.desc;
+  }
+
+  function highlightLegend(index) {
+    const items = document.querySelectorAll('.custom-legend-item');
+    items.forEach((el, i) => {
+      if (i === index) el.classList.add('active');
+      else el.classList.remove('active');
+    });
+  }
+});
+</script>
+
+</body>
+</html>

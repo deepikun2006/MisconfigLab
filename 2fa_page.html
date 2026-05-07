@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MisconfigLab — Two-Step Verification</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;600&family=Orbitron:wght@700;900&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #080808;
+      --bg3: #121212;
+      --blue: #688FE5;
+      --blue-light: #8baaf0;
+      --blue-border: rgba(104, 143, 229, 0.35);
+      --text: #ffffff;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: linear-gradient(rgba(100, 100, 100, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(100, 100, 100, 0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse at 50% 50%, black 20%, transparent 75%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .glow-orb {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(90px);
+      width: 500px;
+      height: 500px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(104, 143, 229, 0.1), transparent 70%);
+    }
+
+    .auth-card {
+      position: relative;
+      z-index: 10;
+      background: rgba(14, 14, 14, 0.7);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 50px 40px;
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .auth-icon {
+      font-size: 48px;
+      color: var(--blue);
+      margin-bottom: 20px;
+      text-shadow: 0 0 20px rgba(104, 143, 229, 0.4);
+    }
+
+    .auth-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .auth-subtitle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 30px;
+    }
+
+    .form-field {
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    .form-field i {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--blue);
+      font-size: 18px;
+    }
+
+    .form-field input {
+      width: 100%;
+      background: var(--bg3);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      padding: 18px 20px 18px 50px;
+      color: #ffffff;
+      font-size: 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 8px;
+      text-align: center;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    .form-field input:focus {
+      border-color: var(--blue-border);
+      background: rgba(104, 143, 229, 0.05);
+      box-shadow: 0 0 15px rgba(104, 143, 229, 0.2);
+    }
+
+    .form-field input::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+      font-size: 1rem;
+      letter-spacing: 2px;
+      transform: translateY(-3px);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(135deg, var(--blue), var(--blue-light));
+      color: #000000;
+      font-weight: 700;
+      font-size: 1.15rem;
+      cursor: pointer;
+      transition: 0.25s;
+      box-shadow: 0 4px 15px rgba(104, 143, 229, 0.2);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(104, 143, 229, 0.35);
+    }
+
+    .cancel-link {
+      display: inline-block;
+      margin-top: 15px;
+      color: rgba(255, 255, 255, 0.5);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+
+    .cancel-link:hover {
+      color: #ffffff;
+    }
+
+    .security-fact {
+      margin-top: 30px;
+      padding: 18px;
+      background: rgba(104, 143, 229, 0.04);
+      border: 1px solid rgba(104, 143, 229, 0.15);
+      border-radius: 10px;
+      text-align: left;
+    }
+
+    .security-fact-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+
+    .security-fact-text {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.65);
+      line-height: 1.5;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="glow-orb"></div>
+
+  <div class="auth-card">
+    <i class="fas fa-fingerprint auth-icon"></i>
+    <h2 class="auth-title">Identity Verification</h2>
+    <p class="auth-subtitle">// Administrator clearance required</p>
+
+    <form method="POST" action="/login/2fa">
+      <div class="form-field">
+        <i class="fas fa-shield-alt"></i>
+        <input type="text" name="2fa_code" maxlength="5" placeholder="Enter 5-character code"
+          style="text-transform: uppercase;" required autocomplete="off" autofocus>
+      </div>
+
+      <button type="submit" class="submit-btn">Verify & Authenticate</button>
+    </form>
+
+    <a href="/login" class="cancel-link"><i class="fas fa-arrow-left me-2"></i>Abort Login</a>
+
+    <div class="security-fact">
+      <div class="security-fact-title">
+        <i class="fas fa-lock"></i> PCI-DSS Protocol Activated
+      </div>
+      <div class="security-fact-text">
+        Requirement 8.4 mandates Multi-Factor Authentication (MFA) for all non-console administrative access into the
+        Cardholder Data Environment to mitigate credential stuffing attacks.
+      </div>
+    </div>
+
+  </div>
+
+</body>
+
+</html>

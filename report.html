@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MisconfigLab | Executive Risk Report</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg-page:  #f4f7f9;
+  --doc-bg:   #ffffff;
+  --navy:     #0B1120;
+  --navy-light:#1e293b;
+  --slate:    #475569;
+  --border:   #e2e8f0;
+  --blue:     #3b82f6;
+  
+
+  --crit:     #dc2626;
+  --high:     #ea580c;
+  --med:      #d97706;
+  --low:      #059669;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg-page);
+  color: var(--navy-light);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--navy);
+  margin-bottom: 0;
+}
+
+
+.document-wrap {
+  max-width: 950px;
+  margin: 40px auto;
+  background: var(--doc-bg);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.page-content {
+  padding: 60px 70px;
+}
+
+
+.doc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 3px solid var(--navy);
+  padding-bottom: 24px;
+  margin-bottom: 32px;
+}
+
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brand-icon {
+  font-size: 28px;
+  color: var(--navy);
+}
+.brand-text h2 {
+  font-weight: 700;
+  font-size: 1.4rem;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+.brand-text span {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.7rem;
+  color: var(--slate);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.doc-meta { text-align: right; }
+.doc-meta .confidential {
+  display: inline-block;
+  background: #fef2f2;
+  color: var(--crit);
+  border: 1px solid #fecaca;
+  padding: 4px 10px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+.meta-grid {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 4px 16px;
+  text-align: left;
+}
+.meta-key {
+  font-size: 0.75rem;
+  color: var(--slate);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+.meta-val {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8rem;
+  color: var(--navy);
+  font-weight: 500;
+  text-align: right;
+}
+
+
+.export-bar {
+  background: #f8fafc;
+  padding: 12px 70px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+}
+.btn-export {
+  background: var(--navy);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-export:hover {
+  background: var(--blue);
+  transform: translateY(-1px);
+}
+
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-title i { color: var(--slate); font-size: 1rem; }
+
+
+.exec-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+.exec-text p {
+  font-size: 0.95rem;
+  color: var(--navy-light);
+  margin-bottom: 16px;
+  text-align: justify;
+}
+
+.scorecard-main {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+}
+.score-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  color: var(--slate);
+  margin-bottom: 10px;
+}
+.score-number {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+  color: var(--navy);
+}
+.score-verdict {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 100px;
+  display: inline-block;
+  margin-bottom: 24px;
+}
+
+.risk-meter {
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  position: relative;
+  margin-bottom: 20px;
+}
+.risk-fill {
+  position: absolute;
+  top: 0; left: 0; height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--crit), var(--high), var(--med), var(--low));
+}
+.risk-marker {
+  position: absolute;
+  top: -4px;
+  width: 4px;
+  height: 16px;
+  background: var(--navy);
+  border-radius: 2px;
+  transform: translateX(-50%);
+}
+
+.sub-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+.sub-metric { text-align: center; }
+.sub-metric-val {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+.sub-metric-lbl {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--slate);
+}
+
+
+.retail-scorecards {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+.retail-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+.retail-card h5 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.req-item { margin-bottom: 12px; }
+.req-header { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; color: var(--navy-light); }
+.req-progress { height: 6px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+.req-bar { height: 100%; border-radius: 4px; }
+
+.threat-matrix {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+.matrix-box {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px;
+}
+.matrix-box h6 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--navy);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.matrix-box p {
+  font-size: 0.85rem;
+  color: var(--slate);
+  margin: 0;
+  line-height: 1.5;
+}
+
+
+.ledger-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 40px;
+}
+.ledger-table th {
+  background: #f1f5f9;
+  padding: 12px 16px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--slate);
+  font-weight: 700;
+  border-bottom: 2px solid var(--border);
+  text-align: left;
+}
+.ledger-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+  vertical-align: middle;
+}
+.ledger-table tr:nth-child(even) { background: #f8fafc; }
+.badge-sm {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.65rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+
+.ticket {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 24px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+  background: #ffffff;
+}
+.ticket-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  background: #f8fafc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+.ticket-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--navy);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ticket-body {
+  padding: 24px;
+}
+.ticket-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.ticket-meta-box {
+  background: #f1f5f9;
+  padding: 12px 16px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+.t-lbl {
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--slate);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.t-val.mono {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8rem;
+  color: var(--navy);
+  word-break: break-all;
+}
+
+.ticket-content h6 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--slate);
+  margin-bottom: 8px;
+  margin-top: 20px;
+}
+.ticket-content p {
+  font-size: 0.9rem;
+  color: var(--navy-light);
+  line-height: 1.6;
+}
+
+.ticket-fix {
+  margin-top: 20px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-left: 4px solid #16a34a;
+  padding: 16px;
+  border-radius: 4px;
+}
+.ticket-fix h6 { color: #166534; margin-top: 0; font-family: 'Space Grotesk', sans-serif;}
+.ticket-fix p { color: #14532d; margin-bottom: 0; }
+
+
+.legal-block {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  margin-top: 20px;
+  font-size: 0.75rem;
+  color: var(--slate);
+  line-height: 1.6;
+  text-align: justify;
+}
+.legal-block h6 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 4px;
+  margin-top: 12px;
+  text-transform: uppercase;
+}
+.legal-block h6:first-child { margin-top: 0; }
+
+
+.doc-footer {
+  margin-top: 60px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--slate);
+}
+
+
+@media print {
+  body { background: #fff; }
+  .document-wrap { box-shadow: none; margin: 0; max-width: 100%; border: none; }
+  .page-content { padding: 0; }
+  .export-bar { display: none; }
+  .ticket, .scorecard-main, .retail-card, .matrix-box, .legal-block { border: 1px solid #cbd5e1; background: #fff !important; }
+  .ticket-fix { border: 1px solid #cbd5e1; border-left: 4px solid #16a34a; background: #fff !important; }
+  .ledger-table th { background: #fff; border-bottom: 2px solid #000; color: #000; }
+  .ledger-table td { border-bottom: 1px solid #cbd5e1; }
+  .ledger-table tr:nth-child(even) { background: #fff; }
+  .ticket-meta-box { background: #fff; border: 1px solid #cbd5e1; }
+}
+</style>
+</head>
+<body>
+
+{% set counts = namespace(checkout=0, privacy=0, hardening=0, api=0) %}
+{% set pci = namespace(req3=100, req6=100, req8=100) %}
+{% set priv = namespace(api=100, db=100, auth=100) %}
+{% set api_risk = namespace(rate=100, cors=100, logic=100) %}
+
+{% for f in findings %}
+  {% set text = f.issue | lower %}
+  {% set weight = 30 if f.severity == 'Critical' else (20 if f.severity == 'High' else (10 if f.severity == 'Medium' else 5)) %}
+  
+  {% if 'checkout' in text or 'payment' in text or 'csp' in text or 'hsts' in text or 'ssl' in text or 'tls' in text %}
+    {% set counts.checkout = counts.checkout + 1 %}
+  {% elif 'customer' in text or 'pii' in text or '.env' in text or '.git' in text or 'data' in text or 'directory' in text %}
+    {% set counts.privacy = counts.privacy + 1 %}
+  {% elif 'api' in text or 'cors' in text or 'rate' in text or 'cart' in text %}
+    {% set counts.api = counts.api + 1 %}
+  {% else %}
+    {% set counts.hardening = counts.hardening + 1 %}
+  {% endif %}
+
+  {# PCI #}
+  {% if 'req 3' in text or 'pii' in text or 'data' in text %}{% set pci.req3 = pci.req3 - weight %}{% endif %}
+  {% if 'req 6' in text or 'cve' in text or 'header' in text or 'version' in text %}{% set pci.req6 = pci.req6 - weight %}{% endif %}
+  {% if 'req 8' in text or 'mfa' in text or 'unauth' in text or 'login' in text %}{% set pci.req8 = pci.req8 - weight %}{% endif %}
+
+  {# PII #}
+  {% if 'api' in text or 'endpoint' in text %}{% set priv.api = priv.api - weight %}{% endif %}
+  {% if 'sql' in text or 'database' in text or 'port' in text or 'exposure' in text or '.env' in text %}{% set priv.db = priv.db - weight %}{% endif %}
+  {% if 'auth' in text or 'session' in text %}{% set priv.auth = priv.auth - weight %}{% endif %}
+
+  {# API #}
+  {% if 'rate' in text or 'limit' in text %}{% set api_risk.rate = api_risk.rate - weight %}{% endif %}
+  {% if 'cors' in text or 'origin' in text %}{% set api_risk.cors = api_risk.cors - weight %}{% endif %}
+  {% if 'logic' in text or 'cart' in text %}{% set api_risk.logic = api_risk.logic - weight %}{% endif %}
+{% endfor %}
+
+{% set penalty = (critical * 15) + (high * 8) + (medium * 3) + (low * 1) %}
+{% set safety_score = 100 - penalty %}
+{% if safety_score < 0 %}{% set safety_score = 0 %}{% endif %}
+{% if findings|length == 0 %}{% set safety_score = 100 %}{% endif %}
+
+{% set r3 = [pci.req3, 0] | max %}
+{% set r6 = [pci.req6, 0] | max %}
+{% set r8 = [pci.req8, 0] | max %}
+{% set pci_total = ((r3 + r6 + r8) / 3) | int %}
+
+{% set pv_api = [priv.api, 0] | max %}
+{% set pv_db = [priv.db, 0] | max %}
+{% set pv_auth = [priv.auth, 0] | max %}
+{% set priv_total = ((pv_api + pv_db + pv_auth) / 3) | int %}
+
+{% set a_rate = [api_risk.rate, 0] | max %}
+{% set a_cors = [api_risk.cors, 0] | max %}
+{% set a_logic = [api_risk.logic, 0] | max %}
+
+{% if safety_score >= 85 %}
+  {% set verdict = "SECURE & COMPLIANT" %}
+  {% set v_color = "#059669" %}
+  {% set v_bg = "#d1fae5" %}
+{% elif safety_score >= 60 %}
+  {% set verdict = "ACTION REQUIRED" %}
+  {% set v_color = "#d97706" %}
+  {% set v_bg = "#fef3c7" %}
+{% else %}
+  {% set verdict = "CRITICAL EXPOSURE" %}
+  {% set v_color = "#dc2626" %}
+  {% set v_bg = "#fee2e2" %}
+{% endif %}
+
+<div class="document-wrap">
+  
+  <div class="export-bar">
+    <button onclick="window.print()" class="btn-export">
+      <i class="fas fa-print"></i> Export Official PDF
+    </button>
+  </div>
+
+  <div class="page-content">
+
+    <div class="doc-header">
+      <div class="brand-lockup">
+        <div class="brand-icon"><i class="fas fa-shield-check"></i></div>
+        <div class="brand-text">
+          <h2>MisconfigLab</h2>
+          <span>Risk Intelligence Audit</span>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <div class="confidential">Strictly Confidential</div>
+        <div class="meta-grid">
+          <span class="meta-key">Storefront Target:</span>
+          <span class="meta-val">{{ findings[0].target if findings else "N/A" }}</span>
+          <span class="meta-key">Date Generated:</span>
+          <span class="meta-val">{{ range(1, 28) | random }} Oct 2023</span>
+          <span class="meta-key">Total Exposures:</span>
+          <span class="meta-val">{{ findings|length }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="exec-grid">
+      <div class="exec-text">
+        <h2 style="margin-bottom: 16px; font-size: 1.8rem;">Executive Brief</h2>
+        <p>
+          This document outlines the security posture and regulatory compliance state of the target e-commerce infrastructure. Automated reconnaissance was conducted aligning with <strong>OWASP Top 10 (A02:2025)</strong> and critical subsets of the <strong>PCI-DSS v4.0</strong> framework.
+        </p>
+        <p>
+          The current environment yields a Transaction Safety Score of <strong>{{ safety_score }}%</strong>. 
+          {% if safety_score < 85 %}
+          Immediate developer intervention is required to remediate identified exposures. Failure to secure checkout flows and API endpoints may result in digital skimming (Magecart) attacks, Customer PII leaks, inventory hoarding, and subsequent regulatory penalties.
+          {% else %}
+          The application currently demonstrates strong adherence to secure e-commerce architecture principles. Continue regular monitoring to prevent configuration drift.
+          {% endif %}
+        </p>
+      </div>
+      
+      <div class="scorecard-main">
+        <div class="score-label">Transaction Safety Score</div>
+        <div class="score-number"><span style="color: #000000;">{{ safety_score }}</span><span style="color: {{ v_color }};">%</span></div>
+        <div class="score-verdict" style="color: {{ v_color }}; background: {{ v_bg }}; border: 1px solid {{ v_color }}40;">
+          {{ verdict }}
+        </div>
+        
+        <div class="risk-meter">
+          <div class="risk-fill"></div>
+          <div class="risk-marker" style="left: {{ safety_score }}%;"></div>
+        </div>
+
+        <div class="sub-metrics">
+          <div class="sub-metric">
+            <div class="sub-metric-val" style="color: {{ '#dc2626' if counts.checkout > 0 else '#059669' }}">{{ counts.checkout }}</div>
+            <div class="sub-metric-lbl">Checkout<br>Risks</div>
+          </div>
+          <div class="sub-metric">
+            <div class="sub-metric-val" style="color: {{ '#ea580c' if counts.privacy > 0 else '#059669' }}">{{ counts.privacy }}</div>
+            <div class="sub-metric-lbl">Privacy<br>Leaks</div>
+          </div>
+          <div class="sub-metric">
+            <div class="sub-metric-val" style="color: {{ '#3b82f6' if counts.api > 0 else '#059669' }}">{{ counts.api }}</div>
+            <div class="sub-metric-lbl">API<br>Flaws</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <i class="fas fa-chart-pie"></i> E-Commerce Threat Matrix
+    </div>
+    <div class="threat-matrix">
+      <div class="matrix-box">
+        <h6><i class="fas fa-sack-dollar text-success"></i> Revenue Risk</h6>
+        <p>
+          {% if counts.api > 0 or counts.checkout > 0 %}
+          Elevated risk of cart abandonment, fraudulent transactions, and inventory hoarding via unprotected APIs. Immediate remediation required to protect Gross Merchandise Value (GMV).
+          {% else %}
+          Low immediate risk to transaction completion and inventory management. Payment flows appear stable.
+          {% endif %}
+        </p>
+      </div>
+      <div class="matrix-box">
+        <h6><i class="fas fa-gavel text-danger"></i> Compliance Risk</h6>
+        <p>
+          {% if pci_total < 100 %}
+          Identified violations of PCI-DSS mandates (Req 3, 6, or 8). Potential for processing fines or revocation of merchant facilities by acquiring banks.
+          {% else %}
+          Current configurations align with baseline PCI-DSS v4.0 requirements for secure data transmission and access control.
+          {% endif %}
+        </p>
+      </div>
+      <div class="matrix-box">
+        <h6><i class="fas fa-users text-primary"></i> Trust & Brand Risk</h6>
+        <p>
+          {% if counts.privacy > 0 %}
+          High probability of PII exposure. A breach of customer names, addresses, or order histories could result in severe reputational damage and GDPR/CCPA action.
+          {% else %}
+          Customer PII appears appropriately segmented with no immediate exposure vectors detected on the external surface.
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <i class="fas fa-sliders-h"></i> Infrastructure Posture
+    </div>
+    <div class="retail-scorecards">
+      
+      <div class="retail-card">
+        <h5><i class="fas fa-certificate text-blue"></i> PCI-DSS Readiness</h5>
+        <div class="req-item">
+          <div class="req-header"><span>Protect Account Data</span><span><span style="color: #000000;">{{ r3 }}</span><span style="color: {{ '#059669' if r3 == 100 else '#dc2626' }};">%</span></span></div>
+          <div class="req-progress"><div class="req-bar" style="width: {{ r3 }}%; background: {{ '#059669' if r3 == 100 else '#dc2626' }};"></div></div>
+        </div>
+        <div class="req-item">
+          <div class="req-header"><span>Secure Systems</span><span><span style="color: #000000;">{{ r6 }}</span><span style="color: {{ '#059669' if r6 == 100 else '#dc2626' }};">%</span></span></div>
+          <div class="req-progress"><div class="req-bar" style="width: {{ r6 }}%; background: {{ '#059669' if r6 == 100 else '#dc2626' }};"></div></div>
+        </div>
+        <div class="req-item mb-0">
+          <div class="req-header"><span>Access Control</span><span><span style="color: #000000;">{{ r8 }}</span><span style="color: {{ '#059669' if r8 == 100 else '#dc2626' }};">%</span></span></div>
+          <div class="req-progress"><div class="req-bar" style="width: {{ r8 }}%; background: {{ '#059669' if r8 == 100 else '#dc2626' }};"></div></div>
+        </div>
+      </div>
+
+      <div class="retail-card">
+        <h5><i class="fas fa-user-shield text-orange"></i> Customer Privacy</h5>
+        <div class="req-item">
+          <div class="req-header"><span>Endpoint Protection</span><span><span style="color: #000000;">{{ pv_api }}</span><span style="color: {{ '#059669' if pv_api == 100 else '#dc2626' }};">%</span></span></div>
+          <div class="req-progress"><div class="req-bar" style="width: {{ pv_api }}%; background: {{ '#059669' if pv_api == 100 else '#dc2626' }};"></div></div>
+        </div>
+        <div class="req-item">
+          <div class="req-header"><span>Storage Integrity</span><span><span style="color: #000000;">{{ pv_db }}</span><span style="color: {{ '#059669' if pv_db == 100 else '#dc2626' }};">%</span></span></div>
+          <div class="req-progress"><div class="req-bar" style="width: {{ pv_db }}%; background: {{ '#059669' if pv_db == 100 else '#dc2626' }};"></div></div>
+        </div>
+        <div class="req-item mb-0">
+          <div class="req-header"><span>ATO Defense</span><span><span style="color: #000000;">{{ pv_auth }}</span><span style="color: {{ '#059669' if pv_auth == 100 else '#dc2626' }};">%</span></span></div>
+          <div class="req-progress"><div class="req-bar" style="width: {{ pv_auth }}%; background: {{ '#059669' if pv_auth == 100 else '#dc2626' }};"></div></div>
+        </div>
+      </div>
+
+      <div class="retail-card">
+        <h5><i class="fas fa-shopping-cart text-teal"></i> Cart & API Integrity</h5>
+        <div class="req-item">
+          <div class="req-header"><span>Rate Limiting</span><span><span style="color: #000000;">{{ a_rate }}</span><span style="color: {{ '#059669' if a_rate == 100 else '#dc2626' }};">%</span></span></div>
+          <div class="req-progress"><div class="req-bar" style="width: {{ a_rate }}%; background: {{ '#059669' if a_rate == 100 else '#dc2626' }};"></div></div>
+        </div>
+        <div class="req-item">
+          <div class="req-header"><span>CORS Policies</span><span><span style="color: #000000;">{{ a_cors }}</span><span style="color: {{ '#059669' if a_cors == 100 else '#dc2626' }};">%</span></span></div>
+          <div class="req-progress"><div class="req-bar" style="width: {{ a_cors }}%; background: {{ '#059669' if a_cors == 100 else '#dc2626' }};"></div></div>
+        </div>
+        <div class="req-item mb-0">
+          <div class="req-header"><span>Business Logic</span><span><span style="color: #000000;">{{ a_logic }}</span><span style="color: {{ '#059669' if a_logic == 100 else '#dc2626' }};">%</span></span></div>
+          <div class="req-progress"><div class="req-bar" style="width: {{ a_logic }}%; background: {{ '#059669' if a_logic == 100 else '#dc2626' }};"></div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="page-break-before: always;"></div>
+    <div class="section-title">
+      <i class="fas fa-list"></i> Exposure Summary Ledger
+    </div>
+    <table class="ledger-table">
+      <thead>
+        <tr>
+          <th>Severity</th>
+          <th>Vulnerability Identifier</th>
+          <th>Risk Category</th>
+          <th>Target Domain</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for f in findings %}
+          {% set text = f.issue | lower %}
+          {% if 'checkout' in text or 'payment' in text or 'csp' in text or 'hsts' in text or 'ssl' in text or 'tls' in text %}
+            {% set tbl_cat = 'Checkout Integrity' %}
+          {% elif 'api' in text or 'cors' in text or 'rate' in text or 'cart' in text %}
+            {% set tbl_cat = 'API & Cart Security' %}
+          {% elif 'customer' in text or 'pii' in text or '.env' in text or '.git' in text or 'data' in text or 'directory' in text %}
+            {% set tbl_cat = 'Data Privacy' %}
+          {% else %}
+            {% set tbl_cat = 'Platform Hardening' %}
+          {% endif %}
+        <tr>
+          <td>
+            {% if f.severity == 'Critical' %}<span class="badge-sm" style="background:#fef2f2; color:#dc2626; border:1px solid #fca5a5;">Critical</span>
+            {% elif f.severity == 'High' %}<span class="badge-sm" style="background:#fff7ed; color:#ea580c; border:1px solid #fdba74;">High</span>
+            {% elif f.severity == 'Medium' %}<span class="badge-sm" style="background:#fefce8; color:#d97706; border:1px solid #fde047;">Medium</span>
+            {% else %}<span class="badge-sm" style="background:#f0fdf4; color:#059669; border:1px solid #86efac;">Low</span>{% endif %}
+          </td>
+          <td style="font-weight: 600; color: var(--navy);">{{ f.issue }}</td>
+          <td>{{ tbl_cat }}</td>
+          <td style="font-family: 'Fira Code', monospace; font-size: 0.75rem;">{{ f.target }}</td>
+        </tr>
+        {% endfor %}
+        {% if findings|length == 0 %}
+        <tr><td colspan="4" style="text-align: center; padding: 30px; color: var(--slate);">No vulnerabilities detected on target.</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+
+    <div class="section-title">
+      <i class="fas fa-code"></i> Technical Remediation Details
+    </div>
+
+    {% for f in findings %}
+      {% set text = f.issue | lower %}
+      {% if 'checkout' in text or 'payment' in text or 'csp' in text or 'hsts' in text or 'ssl' in text or 'tls' in text %}
+        {% set cat_name = 'Checkout Integrity' %}
+      {% elif 'api' in text or 'cors' in text or 'rate' in text or 'cart' in text %}
+        {% set cat_name = 'API & Cart Security' %}
+      {% elif 'customer' in text or 'pii' in text or '.env' in text or '.git' in text or 'data' in text or 'directory' in text %}
+        {% set cat_name = 'Data Privacy' %}
+      {% else %}
+        {% set cat_name = 'Platform Hardening' %}
+      {% endif %}
+
+    <div class="ticket">
+      <div class="ticket-header">
+        <div class="ticket-title">
+          {% if f.severity == 'Critical' %}<i class="fas fa-exclamation-circle text-danger"></i>
+          {% elif f.severity == 'High' %}<i class="fas fa-exclamation-triangle" style="color: #ea580c;"></i>
+          {% else %}<i class="fas fa-info-circle text-warning"></i>{% endif %}
+          {{ f.issue }}
+        </div>
+        <span class="badge-sm" style="background:#ffffff; border: 1px solid var(--border); color: var(--slate);">{{ cat_name }}</span>
+      </div>
+      <div class="ticket-body">
+        
+        <div class="ticket-meta-grid">
+          <div class="ticket-meta-box">
+            <span class="t-lbl">Target Domain</span>
+            <span class="t-val mono">{{ f.target }}</span>
+          </div>
+          <div class="ticket-meta-box">
+            <span class="t-lbl">Exact Source Endpoint / Component</span>
+            <span class="t-val mono" style="color: var(--blue);">{{ f.source if f.source else 'Global / Base Configuration' }}</span>
+          </div>
+        </div>
+
+        <div class="ticket-content">
+          <h6><i class="fas fa-bolt me-1"></i> Business & Revenue Impact</h6>
+          <p>
+            {% if cat_name == 'Checkout Integrity' %}
+            Degrades the encryption or structural integrity of the payment flow. Customers are vulnerable to network interception or browser-level <strong>Magecart skimming attacks</strong>. Direct violation of PCI-DSS leading to potential processing fines.
+            {% elif cat_name == 'API & Cart Security' %}
+            Permits automated abuse of storefront logic. Attackers can execute <strong>inventory hoarding</strong> scripts, manipulate pricing parameters, or launch credential stuffing attacks against customer accounts. High risk to Gross Merchandise Value (GMV).
+            {% elif cat_name == 'Data Privacy' %}
+            Allows unauthorized entities to access sensitive infrastructure or <strong>Customer PII</strong> (Personally Identifiable Information). Mass exfiltration of order histories or user data drastically increases data breach likelihood and brand damage.
+            {% else %}
+            Infrastructure flaw providing attackers a foothold into administrative systems or backend logic. Can be leveraged for complete <strong>Storefront Takeover</strong> or defacement.
+            {% endif %}
+          </p>
+        </div>
+
+        <div class="ticket-fix">
+          <h6><i class="fas fa-wrench me-1"></i> Engineering Remediation</h6>
+          <p>{{ f.description }}</p>
+        </div>
+
+      </div>
+    </div>
+    {% endfor %}
+
+    <div style="page-break-inside: avoid;">
+      <div class="section-title">
+        <i class="fas fa-scale-balanced"></i> Legal & Compliance Notice
+      </div>
+      <div class="legal-block">
+        <h6>1. Scope of Assessment</h6>
+        This document evaluates the security posture of the target e-commerce application based exclusively on automated reconnaissance, unauthenticated endpoint analysis, and configuration checks aligned with OWASP Top 10 (A02:2025) and subsets of the PCI-DSS v4.0 framework. It does not constitute a comprehensive manual penetration test, nor does it guarantee the discovery of all existing vulnerabilities.
+
+        <h6>2. Compliance Disclaimer</h6>
+        While the checks within this report align with Payment Card Industry Data Security Standards (PCI-DSS), MisconfigLab is not a Qualified Security Assessor (QSA). The findings herein are for internal risk management and remediation purposes only. This report cannot be used as an official Report on Compliance (RoC) or an Attestation of Compliance (AoC) for acquiring banks or card brands.
+
+        <h6>3. Limitation of Liability</h6>
+        The information contained within this report is provided "as is" without warranty of any kind, express or implied. MisconfigLab, its operators, and affiliates shall not be held liable for any direct, indirect, incidental, special, or consequential damages. This includes, but is not limited to, data breaches, financial losses, business disruptions, or regulatory fines arising from the use of this report or the failure of the Merchant to remediate identified security risks.
+
+        <h6>4. Confidentiality & Non-Disclosure</h6>
+        This document contains sensitive, proprietary information regarding the security infrastructure and potential vulnerabilities of the target environment. It is classified as STRICTLY CONFIDENTIAL. It is intended solely for the internal use of the designated Merchant and their authorized engineering or security compliance partners. Unauthorized reproduction, distribution, or public disclosure is strictly prohibited.
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div>Generated by <strong>MisconfigLab Scanner Engine</strong></div>
+      <div>Page <span style="font-family: 'Fira Code', monospace;">1</span></div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

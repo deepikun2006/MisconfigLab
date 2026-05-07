@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About & Methodology | MisconfigLab</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+
+  --bg: #080808;
+  --bg2: #0e0e0e;
+  --bg3: #121212;
+  
+ 
+  --blue: #688FE5;
+  --blue-light: #8baaf0;
+  --blue-dim: rgba(104, 143, 229, 0.15);
+  --blue-border: rgba(104, 143, 229, 0.35);
+  
+  
+  --text: #ffffff;
+  --muted: rgba(255, 255, 255, 0.7); 
+  
+ 
+  --coral: #ff5f57; 
+  --teal: #34d399; 
+  --yellow: #fbbf24; 
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+h1, h2, h3, h4, h5, h6, .fw-bold {
+  font-family: 'Chakra Petch', sans-serif;
+  color: var(--text);
+  letter-spacing: 0.3px;
+}
+
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+
+.navbar {
+  background: rgba(8, 8, 8, 0.85); 
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding: 16px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-brand {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  font-size: 1.6rem; 
+  color: #ffffff !important;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.brand-text {
+  background: linear-gradient(90deg, #ffffff 30%, var(--blue-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 12px rgba(104, 143, 229, 0.3));
+}
+
+.nav-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  background: var(--blue-dim);
+  border: 1px solid var(--blue-border);
+  color: #ffffff;
+  padding: 8px 18px;
+  border-radius: 100px;
+  text-decoration: none;
+  transition: all 0.25s;
+  letter-spacing: 0.3px;
+  font-weight: 600;
+}
+
+.nav-pill:hover {
+  background: linear-gradient(135deg, var(--blue), var(--blue-light));
+  border-color: transparent;
+  color: #000;
+  box-shadow: 0 0 20px rgba(104, 143, 229, 0.4);
+}
+
+
+.hero {
+  position: relative;
+  padding: 110px 0 90px;
+  text-align: center;
+  overflow: hidden;
+  background: var(--bg);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.hero-glow {
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 500px;
+  background: radial-gradient(ellipse at center, rgba(104, 143, 229, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(100, 100, 100, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 100, 100, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at 50% 0%, black 30%, transparent 80%);
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.95rem;
+  font-weight: 600; 
+  color: #ffffff;
+  background: var(--blue-dim);
+  border: 1px solid var(--blue-border);
+  padding: 8px 18px; 
+  border-radius: 100px;
+  margin-bottom: 24px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 15px rgba(104, 143, 229, 0.15); 
+}
+
+.hero-eyebrow .dot {
+  width: 8px; 
+  height: 8px;
+  border-radius: 50%;
+  background: var(--blue);
+  animation: pulse-dot 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.7); box-shadow: 0 0 10px var(--blue); }
+}
+
+.hero h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.09;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+}
+
+
+.hero h1 span {
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--blue), #b3c9f5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: 1.15rem;
+  color: var(--muted);
+  line-height: 1.8;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+
+.section { padding: 90px 0; position: relative; z-index: 1; }
+.section-alt { background: var(--bg2); border-top: 1px solid rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.02); }
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem; color: var(--blue); font-weight: 600;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-weight: 800; color: #fff;
+  letter-spacing: 0.3px; margin-bottom: 16px;
+}
+
+.section-body {
+  font-size: 1.05rem; color: var(--muted);
+  line-height: 1.8; max-width: 600px;
+}
+
+
+.info-card {
+  background: var(--bg3);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px; padding: 32px;
+  height: 100%; transition: all 0.3s ease;
+  position: relative; overflow: hidden;
+}
+
+.info-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--blue-dim), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+
+.info-card:hover { 
+  border-color: var(--blue-border); 
+  transform: translateY(-4px); 
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+.info-card:hover::before { opacity: 1; }
+
+.info-card-icon {
+  width: 48px; height: 48px;
+  background: var(--blue-dim);
+  border: 1px solid var(--blue-border);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; color: var(--blue);
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.info-card h5 {
+  font-weight: 700; font-size: 1.1rem;
+  color: #fff; margin-bottom: 12px;
+}
+
+.info-card p {
+  font-size: 0.96rem; color: var(--muted);
+  line-height: 1.75; margin: 0;
+}
+
+
+.step-row {
+  display: flex; gap: 24px; align-items: flex-start;
+  padding: 28px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.step-row:last-child { border-bottom: none; padding-bottom: 0; }
+.step-row:first-child { padding-top: 0; }
+
+.step-num-box {
+  width: 46px; height: 46px; flex-shrink: 0;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--blue);
+}
+
+.step-content h6 {
+  font-size: 1.1rem; font-weight: 700;
+  color: #fff; margin-bottom: 8px;
+}
+
+.step-content p {
+  font-size: 0.95rem; color: var(--muted);
+  line-height: 1.6; margin: 0;
+}
+
+
+.score-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.score-table thead th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  padding: 16px 20px; font-weight: 600;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  text-align: left; background: rgba(255,255,255,0.02);
+}
+
+.score-table tbody tr {
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.2s;
+}
+
+.score-table tbody tr:last-child { border-bottom: none; }
+.score-table tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+.score-table tbody td {
+  padding: 16px 20px; color: var(--muted); vertical-align: middle;
+}
+
+.score-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem; padding: 4px 10px;
+  border-radius: 100px; font-weight: 700; text-transform: uppercase;
+}
+
+.tech-pill {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--bg3); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px; padding: 12px 20px;
+  font-size: 0.95rem; font-weight: 500; color: var(--text);
+  transition: all 0.2s; 
+}
+.tech-pill:hover { border-color: var(--blue-border); color: var(--blue-light); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+.tech-pill i { color: var(--blue); font-size: 16px; }
+
+
+.stat-callout {
+  background: var(--bg3); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px; padding: 28px; text-align: center;
+  transition: all 0.3s ease;
+}
+.stat-callout:hover { border-color: var(--blue-border); transform: translateY(-3px); }
+.stat-callout .num {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 2.8rem; font-weight: 700; color: var(--blue);
+  line-height: 1; letter-spacing: 0.5px;
+}
+.stat-callout .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem; font-weight: 500; color: var(--muted);
+  margin-top: 10px; line-height: 1.5; text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+
+.cta-banner {
+  padding: 100px 0; text-align: center;
+  position: relative; z-index: 1;
+  background: var(--bg2);
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+.cta-banner::before {
+  content: ''; position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 700px; height: 400px;
+  background: radial-gradient(ellipse, rgba(104, 143, 229, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.btn-primary-custom {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, var(--blue), var(--blue-light));
+  color: #000; font-weight: 700; font-size: 0.95rem; 
+  padding: 14px 32px; border-radius: 10px;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: all 0.25s;
+  box-shadow: 0 4px 24px rgba(104, 143, 229, 0.35);
+}
+.btn-primary-custom:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(104, 143, 229, 0.5); color: #000; }
+
+
+footer {
+  background: var(--bg);
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding: 44px 0;
+}
+.footer-brand {
+  font-family: 'Orbitron', sans-serif; font-weight: 900;
+  color: var(--blue); font-size: 1.2rem; letter-spacing: 1px;
+  text-transform: uppercase; display: flex; align-items: center; gap: 10px;
+}
+.footer-meta { font-size: 0.88rem; color: var(--muted); margin-top: 6px; }
+.footer-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.footer-tag {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+  color: var(--blue); background: var(--blue-dim); border: 1px solid var(--blue-border);
+  padding: 3px 10px; border-radius: 100px; font-weight: 600;
+}
+.footer-copy { font-size: 0.88rem; color: var(--muted); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+.fade-up { animation: fadeUp 0.7s ease forwards; }
+.delay-1 { animation-delay: 0.1s; opacity: 0; }
+.delay-2 { animation-delay: 0.22s; opacity: 0; }
+.delay-3 { animation-delay: 0.34s; opacity: 0; }
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <span class="brand-icon" style="background: transparent; border: none; box-shadow: none; width: auto; height: auto; display: flex; align-items: center;">
+        <svg width="42" height="42" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 8px rgba(104, 143, 229, 0.4));">
+          <rect x="5" y="5" width="90" height="90" rx="22" fill="#688FE5" fill-opacity="0.1" stroke="#688FE5" stroke-width="4"/>
+          <path d="M50 20 L25 32 V55 C25 75 50 85 50 85 C50 85 75 75 75 55 V32 L50 20 Z" fill="#688FE5" fill-opacity="0.15" stroke="#8baaf0" stroke-width="5" stroke-linejoin="round"/>
+          <path d="M35 55 V42 L50 50 L65 42 V55" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="35" cy="42" r="3" fill="#ffffff"/>
+          <circle cx="50" cy="50" r="3" fill="#ffffff"/>
+          <circle cx="65" cy="42" r="3" fill="#ffffff"/>
+        </svg>
+      </span>
+      <span class="brand-text">MisconfigLab</span>
+    </a>
+    <div class="ms-auto d-flex align-items-center gap-3">
+      <a href="/" style="font-family:'JetBrains Mono',monospace; font-size:0.82rem; color:#ffffff; opacity:0.85; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#688FE5'" onmouseout="this.style.color=''; this.style.opacity='0.85'">
+        Home
+      </a>
+      <a href="/login" class="nav-pill">
+        <i class="fas fa-sign-in-alt me-1"></i>Login
+      </a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grid-bg"></div>
+  <div class="container" style="position:relative; z-index:1;">
+    <div class="hero-eyebrow fade-up"><span class="dot"></span> Research Platform · OWASP A05:2021</div>
+    <h1 class="fade-up delay-1">About <span>MisconfigLab</span></h1>
+    <p class="hero-sub fade-up delay-2">
+      A controlled research platform built to systematically model, detect, and validate
+      security misconfigurations in e-commerce web environments - the operational vulnerabilities that
+      automated CVE scanners consistently miss.
+    </p>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container" style="position:relative; z-index:1;">
+
+    <div class="row align-items-center g-5">
+      <div class="col-lg-5">
+        <p class="section-label">The Research Problem</p>
+        <h2 class="section-title">Why do misconfigurations keep getting exploited?</h2>
+        <p class="section-body">
+          The threat was given systemic status by the Open Web Application Security Project (OWASP), which ranked Security Misconfiguration in the <strong style="color: #fff;">A05:2021</strong> category. Despite widespread awareness and frameworks like PCI-DSS v4.0, organizations continue to be breached through configuration errors.
+        </p>
+        <p class="section-body mt-3">
+          The problem isn't a lack of tools. Common commercial and open-source vulnerability scanners are designed to analyze thousands of known CVE signatures. However, misconfigurations—like an absent Content Security Policy (CSP) permitting a Magecart injection—are operational oversights, not code bugs. They don't have standard signatures.
+        </p>
+        <p class="section-body mt-3">
+          MisconfigLab was built to address this gap: an empirical, controlled environment for deliberately
+          validating configuration weaknesses specifically within digital retail infrastructure.
+        </p>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="row g-4">
+          <div class="col-6">
+            <div class="stat-callout">
+              <div class="num" style="color: var(--teal);">A05</div>
+              <div class="label">OWASP Top 10<br>Ranking (2021)</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="stat-callout">
+              <div class="num" style="color: var(--coral);">22%</div>
+              <div class="label">Global Retail<br>E-commerce Share</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="stat-callout">
+              <div class="num" style="color: var(--yellow);">PCI</div>
+              <div class="label">Mapped to DSS v4.0<br>Requirements</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="stat-callout">
+              <div class="num" style="color: var(--blue-light);">100%</div>
+              <div class="label">True Positive Rate<br>in Testing</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="position:relative; z-index:1;">
+
+    <div class="text-center mb-5">
+      <p class="section-label">Standards Alignment</p>
+      <h2 class="section-title">What is OWASP A05:2021?</h2>
+      <p class="section-body mx-auto" style="max-width:650px;">
+        The Open Web Application Security Project (OWASP) publishes the Top 10 — the most
+        critical security risks to web applications. A05 represents Security Misconfiguration.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="info-card">
+          <div class="info-card-icon" style="color: var(--blue-light); background: rgba(139, 170, 240, 0.1); border-color: rgba(139, 170, 240, 0.3);"><i class="fas fa-cog"></i></div>
+          <h5>What it covers</h5>
+          <p>Insecure default configurations, unpatched deployments, unprotected files (e.g. .env), verbose error messages, missing security headers, and overly permissive cloud storage permissions.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="info-card">
+          <div class="info-card-icon" style="color: var(--coral); background: rgba(255, 95, 87, 0.1); border-color: rgba(255, 95, 87, 0.3);"><i class="fas fa-triangle-exclamation"></i></div>
+          <h5>Why it evades detection</h5>
+          <p>Unlike injection flaws, misconfigurations are operational context failures. Traditional DAST tools rely on rigid signatures, failing to reason through environment-dependent settings or business logic context.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="info-card">
+          <div class="info-card-icon" style="color: var(--teal); background: rgba(52, 211, 153, 0.1); border-color: rgba(52, 211, 153, 0.3);"><i class="fas fa-credit-card"></i></div>
+          <h5>Why e-commerce?</h5>
+          <p>E-commerce handles high-value PII and Primary Account Numbers (PAN). A single misconfiguration can allow digital skimming (Magecart) injections, resulting in GDPR fines and loss of PCI-DSS compliance.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container" style="position:relative; z-index:1;">
+
+    <div class="row g-5 align-items-start">
+      <div class="col-lg-4">
+        <p class="section-label">How It Works</p>
+        <h2 class="section-title">Scanning Methodology</h2>
+        <p class="section-body">
+          MisconfigLab avoids Denial of Service (DoS) conditions by separating its bespoke Python scanning engine into four highly targeted, operational templates.
+        </p>
+        <p class="section-body mt-3">
+          Network reconnaissance is executed asynchronously using background threads to ensure seamless UI operation while maintaining deep detection accuracy.
+        </p>
+      </div>
+
+      <div class="col-lg-8">
+        <div class="info-card">
+          <div class="step-row">
+            <div class="step-num-box">01</div>
+            <div class="step-content">
+              <h6>Template 1: Full Web App & Infrastructure</h6>
+              <p>Utilizes active network scanning techniques (Nmap subprocesses) to fingerprint server infrastructure, mapping exposed TCP ports and out-of-date daemons without overwhelming the target.</p>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-num-box">02</div>
+            <div class="step-content">
+              <h6>Template 2: Security Headers Analysis</h6>
+              <p>Evaluates client-side protections by parsing HTTP response dictionaries to verify critical directives, notably Content-Security-Policy (Magecart mitigation) and Strict-Transport-Security.</p>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-num-box">03</div>
+            <div class="step-content">
+              <h6>Template 3: File & Directory Exposure</h6>
+              <p>Executes intelligent directory brute-forcing. Instead of relying solely on HTTP 200 codes, the logic parses raw text content to confirm the existence of exposed .env files and Git repositories.</p>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-num-box">04</div>
+            <div class="step-content">
+              <h6>Template 4: E-commerce Anomalies</h6>
+              <p>Deploys business-logic probes designed to detect high-risk retail anomalies, including exposed stack traces, unprotected payment APIs, and unauthenticated administrative panels (e.g., wp-admin).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="position:relative; z-index:1;">
+
+    <div class="row g-5 align-items-start">
+      <div class="col-lg-4">
+        <p class="section-label">Risk Scoring Model</p>
+        <h2 class="section-title">The Transaction Safety Score</h2>
+        <p class="section-body">
+          Technical CVSS scores are often unclear to business owners. MisconfigLab solves this by translating technical discoveries into a non-technical, mathematically derived Transaction Safety Score.
+        </p>
+        <p class="section-body mt-3">
+          The system calculates a "Risk Penalty" by multiplying the number of vulnerabilities by their severity weight, generating a clear grade of organizational risk out of 100.
+        </p>
+      </div>
+
+      <div class="col-lg-8">
+        <div class="info-card" style="padding: 0; overflow:hidden;">
+          <table class="score-table">
+            <thead>
+              <tr>
+                <th>Severity</th>
+                <th>Weight</th>
+                <th>Rationale</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="score-badge" style="background:rgba(255,95,87,0.12);border:1px solid rgba(255,95,87,0.3);color:var(--coral);">Critical</span></td>
+                <td><span style="font-family:'JetBrains Mono',monospace;color:#fff;font-weight:700;">×10</span></td>
+                <td>Catastrophic configuration drift. E.g., Absent CSP or exposed .env API keys.</td>
+              </tr>
+              <tr>
+                <td><span class="score-badge" style="background:rgba(251,191,36,0.12);border:1px solid rgba(251,191,36,0.3);color:var(--yellow);">High</span></td>
+                <td><span style="font-family:'JetBrains Mono',monospace;color:#fff;font-weight:700;">×7</span></td>
+                <td>Significant exposure. E.g., Missing HSTS headers or exposed admin directories.</td>
+              </tr>
+              <tr>
+                <td><span class="score-badge" style="background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.3);color:var(--teal);">Medium</span></td>
+                <td><span style="font-family:'JetBrains Mono',monospace;color:#fff;font-weight:700;">×4</span></td>
+                <td>Moderate risk. Unprotected endpoints or partial business-logic flaws.</td>
+              </tr>
+              <tr>
+                <td><span class="score-badge" style="background:rgba(104,143,229,0.12);border:1px solid rgba(104,143,229,0.3);color:var(--blue-light);">Low</span></td>
+                <td><span style="font-family:'JetBrains Mono',monospace;color:#fff;font-weight:700;">×1</span></td>
+                <td>Informational. E.g., Verbose HTTP server headers disclosing backend versioning.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="mt-3 text-end" style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;font-weight:500;color:var(--muted);">
+          Algorithm: <span style="color:var(--blue-light);">Penalty (P) = Σ(v_i × w_i) &nbsp;|&nbsp; Safety Score (S) = max(0, 100 - P)</span>
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container" style="position:relative; z-index:1;">
+
+    <div class="text-center mb-5">
+      <p class="section-label">PELS Analysis</p>
+      <h2 class="section-title">Ethics, Legalities & Social Impact</h2>
+      <p class="section-body mx-auto" style="max-width:700px;">
+        Vulnerability scanners exist in a complex space. The tools developed to defend against attacks are the same ones capable of exploitation. MisconfigLab operates under strict compliance boundaries.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="info-card">
+          <div class="info-card-icon"><i class="fas fa-gavel"></i></div>
+          <h5>UK Computer Misuse Act 1990</h5>
+          <p>To adhere to Sections 1 & 3 of the CMA (criminalizing unauthorized access), MisconfigLab enforces a strict "Authorized Targets Only" policy. Testing is restricted to controlled Docker containers.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="info-card">
+          <div class="info-card-icon" style="color: var(--yellow); background: rgba(251, 191, 36, 0.1); border-color: rgba(251, 191, 36, 0.3);"><i class="fas fa-balance-scale"></i></div>
+          <h5>The "Dual-Use" Dilemma</h5>
+          <p>To prevent malicious reconnaissance, the platform explicitly excludes active exploitation modules. It will identify an open directory, but it will never extract or steal the underlying data payload.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="info-card">
+          <div class="info-card-icon" style="color: var(--teal); background: rgba(52, 211, 153, 0.1); border-color: rgba(52, 211, 153, 0.3);"><i class="fas fa-users"></i></div>
+          <h5>The Security Poverty Line</h5>
+          <p>Small-to-Medium Enterprises (SMEs) are disproportionately targeted by Magecart syndicates. MisconfigLab's social mission is to democratize professional-grade testing, making high-level security intelligence accessible.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="position:relative; z-index:1;">
+
+    <div class="text-center mb-5">
+      <p class="section-label">Built With</p>
+      <h2 class="section-title">Technology Stack</h2>
+    </div>
+
+    <div class="d-flex flex-wrap gap-3 justify-content-center" style="max-width: 900px; margin: 0 auto;">
+      <span class="tech-pill"><i class="fab fa-python"></i> Python 3.10 / Flask</span>
+      <span class="tech-pill"><i class="fas fa-database"></i> SQLite 3NF / SQLAlchemy</span>
+      <span class="tech-pill"><i class="fas fa-chart-pie"></i> Chart.js</span>
+      <span class="tech-pill"><i class="fab fa-bootstrap"></i> Bootstrap 5</span>
+      <span class="tech-pill"><i class="fas fa-shield-alt"></i> OWASP A05:2021</span>
+      <span class="tech-pill"><i class="fas fa-credit-card"></i> PCI DSS v4.0</span>
+      <span class="tech-pill"><i class="fas fa-lock"></i> Flask-Login (RBAC)</span>
+      <span class="tech-pill"><i class="fas fa-network-wired"></i> Asynchronous Routing</span>
+    </div>
+
+  </div>
+</section>
+
+<section class="cta-banner">
+  <div class="container" style="position:relative; z-index:1;">
+    <p class="section-label" style="text-align:center;">Get Started</p>
+    <h2 class="section-title" style="text-align:center; font-size:clamp(2rem,4vw,3rem); margin-top: 10px;">
+      Ready to bridge the configuration gap?
+    </h2>
+    <p style="color:var(--muted); font-size:1.05rem; margin:16px auto 40px; max-width:500px; text-align:center; line-height:1.7;">
+      Log in to MisconfigLab and queue your first targeted scan. Secure your digital retail infrastructure today.
+    </p>
+    <a href="/login" class="btn-primary-custom" style="margin: 0 auto; display: inline-flex;">
+      <i class="fas fa-sign-in-alt"></i> Access the Platform
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <div class="footer-brand">
+          <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="5" y="5" width="90" height="90" rx="22" fill="#688FE5" fill-opacity="0.1" stroke="#688FE5" stroke-width="4"/>
+            <path d="M50 20 L25 32 V55 C25 75 50 85 50 85 C50 85 75 75 75 55 V32 L50 20 Z" fill="#688FE5" fill-opacity="0.15" stroke="#8baaf0" stroke-width="5" stroke-linejoin="round"/>
+            <path d="M35 55 V42 L50 50 L65 42 V55" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="35" cy="42" r="3" fill="#ffffff"/>
+            <circle cx="50" cy="50" r="3" fill="#ffffff"/>
+            <circle cx="65" cy="42" r="3" fill="#ffffff"/>
+          </svg> 
+          <span class="brand-text" style="background: none; -webkit-text-fill-color: #ffffff; filter: none; text-transform: uppercase;">MisconfigLab</span>
+        </div>
+        <p class="footer-meta">E-Commerce Security Misconfiguration Platform</p>
+      </div>
+      <div class="col-md-6 footer-right mt-3 mt-md-0">
+        <span class="footer-tag">Merchant Security Platform</span>
+        <span class="footer-copy">© 2026 MisconfigLab · All rights reserved</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Request Scan | MisconfigLab</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;600&family=Orbitron:wght@700;900&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #080808;
+      --bg2: #0e0e0e;
+      --bg3: #121212;
+      --bg4: #1a1a1a;
+
+      --blue: #688FE5;
+      --blue-light: #8baaf0;
+      --blue-dim: rgba(104, 143, 229, 0.15);
+      --blue-border: rgba(104, 143, 229, 0.35);
+
+      --text: #ffffff;
+      --muted: #ffffff;
+      --soft: #ffffff;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 18px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.3;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(100, 100, 100, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(100, 100, 100, 0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse at 50% 0%, black 20%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .navbar {
+      background: rgba(8, 8, 8, 0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar-brand {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 1.3rem;
+      color: var(--blue) !important;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+
+    .brand-text {
+      background: linear-gradient(90deg, var(--blue), #b3c9f5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 6px rgba(104, 143, 229, 0.4));
+      text-transform: uppercase;
+    }
+
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      background: var(--blue-dim);
+      border: 1px solid var(--blue-border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      color: var(--blue);
+    }
+
+    .brand-sub {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      color: #ffffff;
+      display: block;
+      font-weight: 600;
+      margin-top: 2px;
+      letter-spacing: 0;
+      text-transform: none;
+      -webkit-text-fill-color: #ffffff;
+      filter: none;
+    }
+
+    .nav-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      padding: 8px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+
+    .nav-btn-ghost {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+
+    .nav-btn-ghost:hover {
+      border-color: var(--blue-border);
+      color: var(--blue);
+      background: var(--blue-dim);
+    }
+
+    .nav-btn-logout {
+      background: rgba(248, 113, 113, 0.07);
+      border: 1px solid rgba(248, 113, 113, 0.2);
+      color: #fca5a5;
+    }
+
+    .nav-btn-logout:hover {
+      background: rgba(248, 113, 113, 0.14);
+      color: #fecaca;
+    }
+
+    .page-header {
+      position: relative;
+      z-index: 1;
+      padding: 60px 0 40px;
+      text-align: center;
+    }
+
+    .page-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--blue);
+      background: var(--blue-dim);
+      border: 1px solid var(--blue-border);
+      padding: 6px 16px;
+      border-radius: 100px;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    .page-eyebrow .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--blue);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.5;
+        transform: scale(0.7);
+        box-shadow: 0 0 10px var(--blue);
+      }
+    }
+
+    .page-title {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.3px;
+      margin-bottom: 16px;
+    }
+
+    .page-title span {
+      background: linear-gradient(90deg, var(--blue), #b3c9f5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .page-sub {
+      font-size: 1.15rem;
+      color: #ffffff;
+      max-width: 540px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .scan-wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1060px;
+      margin: 0 auto 80px;
+      padding: 0 20px;
+    }
+
+    .scan-card {
+      background: var(--bg3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+    }
+
+    .scan-sidebar {
+      padding: 40px 36px;
+      border-right: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    @media (max-width: 991.98px) {
+      .scan-sidebar {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 32px 28px;
+      }
+    }
+
+    .sidebar-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--blue);
+      background: var(--blue-dim);
+      border: 1px solid var(--blue-border);
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 32px;
+      font-weight: 600;
+    }
+
+    .sidebar-status .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #34d399;
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+
+    .sidebar-section-title {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.3px;
+      margin-bottom: 18px;
+    }
+
+    .checklist {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 1.05rem;
+      color: #ffffff;
+      line-height: 1.5;
+    }
+
+    .check-dot {
+      width: 24px;
+      height: 24px;
+      background: rgba(52, 211, 153, 0.15);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 12px;
+      color: #34d399;
+      margin-top: 2px;
+    }
+
+    .sidebar-metric {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--bg4);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 22px;
+    }
+
+    .metric-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--blue-dim);
+      border: 1px solid var(--blue-border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--blue);
+      flex-shrink: 0;
+    }
+
+    .metric-text {
+      font-size: 0.95rem;
+      color: #ffffff;
+      line-height: 1.6;
+    }
+
+    .metric-text strong {
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .sidebar-notice {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.6;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 18px;
+    }
+
+    .form-panel {
+      padding: 40px 48px;
+    }
+
+    @media (max-width: 991.98px) {
+      .form-panel {
+        padding: 32px 28px;
+      }
+    }
+
+    .form-section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+
+    .field-group {
+      margin-bottom: 26px;
+    }
+
+    .field-label {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .field-hint {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 8px;
+    }
+
+    .form-control,
+    .form-select {
+      width: 100%;
+      background: var(--bg2);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 14px 18px;
+      color: var(--text);
+      font-size: 1.05rem;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+      outline: none;
+    }
+
+    .form-control::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: var(--blue-border);
+      background: rgba(104, 143, 229, 0.05);
+      box-shadow: 0 0 0 3px rgba(104, 143, 229, 0.15);
+      color: var(--text);
+    }
+
+    .form-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23ffffff' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 18px center;
+      padding-right: 44px;
+      cursor: pointer;
+    }
+
+    .form-select option,
+    .form-select optgroup {
+      background: var(--bg3);
+      color: var(--text);
+    }
+
+    textarea.form-control {
+      min-height: 120px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .auth-check-box {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 16px 16px 16px 44px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 14px;
+    }
+
+    .auth-check-box .form-check-input {
+      background-color: var(--bg2);
+      border-color: var(--blue-border);
+      margin-top: 5px;
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .auth-check-box .form-check-input:checked {
+      background-color: var(--blue);
+      border-color: var(--blue);
+    }
+
+    .auth-check-box .form-check-input:focus {
+      box-shadow: 0 0 0 3px rgba(104, 143, 229, 0.25);
+    }
+
+    .auth-check-box .form-check-label {
+      font-size: 1rem;
+      color: #ffffff;
+      line-height: 1.6;
+      cursor: pointer;
+      margin-left: 6px;
+    }
+
+    .submit-area {
+      margin-top: 36px;
+      padding-top: 28px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, var(--blue), var(--blue-light));
+      color: #000000;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 4px 20px rgba(104, 143, 229, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(104, 143, 229, 0.48);
+    }
+
+    .submit-hint {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.8);
+      text-align: center;
+      margin-top: 14px;
+    }
+
+    .submit-hint span {
+      color: var(--blue);
+      font-weight: 600;
+    }
+
+    .rejected-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 8, 8, 0.92);
+      backdrop-filter: blur(8px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .rejected-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .rejected-box {
+      background: var(--bg2);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: 24px;
+      padding: 48px;
+      width: 90%;
+      max-width: 480px;
+      text-align: center;
+      box-shadow: 0 0 50px rgba(239, 68, 68, 0.2);
+      transform: scale(0.9) translateY(20px);
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .rejected-overlay.active .rejected-box {
+      transform: scale(1) translateY(0);
+    }
+
+    .rejected-icon {
+      width: 80px;
+      height: 80px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 28px;
+      font-size: 32px;
+      color: #fca5a5;
+      animation: shake 0.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes shake {
+      from {
+        transform: rotate(-8deg);
+      }
+
+      to {
+        transform: rotate(8deg);
+      }
+    }
+
+    .rejected-title {
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 800;
+      font-size: 1.8rem;
+      color: #ffffff;
+      margin-bottom: 14px;
+    }
+
+    .rejected-text {
+      font-size: 1.15rem;
+      color: #ffffff;
+      line-height: 1.6;
+      margin-bottom: 36px;
+    }
+
+    .rejected-close {
+      background: transparent;
+      border: 1px solid var(--blue-border);
+      color: var(--blue);
+      padding: 14px 36px;
+      border-radius: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .rejected-close:hover {
+      background: var(--blue-dim);
+      border-color: var(--blue);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-up {
+      animation: fadeUp 0.6s ease forwards;
+    }
+
+    .d1 {
+      animation-delay: 0.08s;
+      opacity: 0;
+    }
+
+    .d2 {
+      animation-delay: 0.18s;
+      opacity: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  {% for category, message in messages %}
+  {% if category == 'error' %}
+  <div class="rejected-overlay" id="rejectedOverlay">
+    <div class="rejected-box">
+      <div class="rejected-icon">
+        <i class="fas fa-shield-slash"></i>
+      </div>
+      <div class="rejected-title">Request Denied</div>
+      <p class="rejected-text">{{ message }}</p>
+      <button class="rejected-close" onclick="closeRejected()">Acknowledge</button>
+    </div>
+  </div>
+  {% endif %}
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+  <nav class="navbar navbar-dark px-4">
+    <a class="navbar-brand" href="/client">
+      <span class="brand-icon"><i class="fas fa-shield-alt"></i></span>
+      <div>
+        <span class="brand-text">MisconfigLab</span>
+        <span class="brand-sub">Web Misconfiguration Platform</span>
+      </div>
+    </a>
+    <div class="ms-auto d-flex align-items-center gap-3">
+      <a href="/client" class="nav-btn nav-btn-ghost">
+        <i class="fas fa-gauge-high"></i> Dashboard
+      </a>
+      <a href="/logout" class="nav-btn nav-btn-logout">
+        <i class="fas fa-right-from-bracket"></i> Logout
+      </a>
+    </div>
+  </nav>
+
+  <div class="page-header fade-up">
+    <div class="page-eyebrow">
+      <span class="dot"></span>
+      SCAN REQUEST
+    </div>
+    <div class="page-title">Request a <span>Security Scan</span></div>
+    <p class="page-sub">
+      Submit your target and we'll queue a focused misconfiguration scan for your e-commerce stack.
+    </p>
+  </div>
+
+  <div class="scan-wrapper fade-up d1">
+    <div class="scan-card">
+      <div class="row g-0">
+
+        <div class="col-lg-4 scan-sidebar">
+
+          <div class="sidebar-status">
+            <span class="live-dot"></span>
+            Live queue · ~1–12 hours
+          </div>
+
+          <div class="sidebar-section-title">What this scan covers</div>
+          <ul class="checklist">
+            <li>
+              <span class="check-dot"><i class="fas fa-check"></i></span>
+              Security misconfigurations (OWASP A02)
+            </li>
+            <li>
+              <span class="check-dot"><i class="fas fa-check"></i></span>
+              Exposed debug &amp; verbose error pages
+            </li>
+            <li>
+              <span class="check-dot"><i class="fas fa-check"></i></span>
+              Missing or weak security headers
+            </li>
+            <li>
+              <span class="check-dot"><i class="fas fa-check"></i></span>
+              Common SSL/TLS issues
+            </li>
+          </ul>
+
+          <div class="sidebar-metric">
+            <div class="metric-icon"><i class="fas fa-fire"></i></div>
+            <div class="metric-text">
+              Used in pilot by <strong>early-stage e-commerce teams</strong> to catch critical gaps before they're
+              exploited.
+            </div>
+          </div>
+
+          <p class="sidebar-notice">
+            Only submit targets you are authorized to test. MisconfigLab is built for legitimate security hardening.
+          </p>
+
+        </div>
+
+        <div class="col-lg-8 form-panel">
+
+          <div class="form-section-label">// scan configuration</div>
+
+          <form method="POST">
+
+            <div class="field-group">
+              <label class="field-label">Target URL / Domain</label>
+              <input type="text" class="form-control" name="target" placeholder="yourstore.com or https://yourstore.com"
+                required>
+              <div class="field-hint">Works best with production or staging URLs that match your e-commerce surface.
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">Scan Template</label>
+              <select class="form-select" name="template">
+
+                <optgroup label="── General Scans">
+                  <option value="full web" selected>Full web application scan</option>
+                  <option value="wordpress">WordPress misconfiguration scan</option>
+                  <option value="ssl tls">SSL/TLS configuration audit</option>
+                  <option value="headers">Security headers analysis</option>
+                  <option value="docker">Docker / container environment scan</option>
+                </optgroup>
+
+                <optgroup label="── E-Commerce Scans">
+                  <option value="payment & checkout">Payment &amp; checkout security scan</option>
+                  <option value="customer data">Customer data exposure scan</option>
+                  <option value="admin panel">Admin panel hardening scan</option>
+                  <option value="cart & api">Cart &amp; API security scan</option>
+                </optgroup>
+
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">Priority</label>
+              <select class="form-select" name="priority">
+                <option value="Low">Low · within 1 week</option>
+                <option value="Medium" selected>Medium · within 24 hours</option>
+                <option value="High">High · next available slot</option>
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">Additional Context <span
+                  style="color:rgba(255,255,255,0.5); font-weight:400;">(optional)</span></label>
+              <textarea class="form-control" name="description" rows="4"
+                placeholder="e.g. focus on /checkout, /admin, or recent config changes you want validated."></textarea>
+            </div>
+
+            <div class="field-group mb-0">
+              <div class="form-check auth-check-box">
+                <input class="form-check-input" type="checkbox" id="authCheck" name="auth_check" required>
+                <label class="form-check-label" for="authCheck">
+                  I confirm that I own this domain or have explicit legal authorization to run automated security scans
+                  against this target.
+                </label>
+              </div>
+            </div>
+
+            <div class="submit-area">
+              <button class="submit-btn" type="submit">
+                <i class="fas fa-paper-plane"></i>
+                Submit Scan Request
+              </button>
+              <div class="submit-hint">
+                Once queued, you'll see this under <span>Scan history</span> in your dashboard.
+              </div>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+      const overlay = document.getElementById('rejectedOverlay');
+      if (overlay) {
+        setTimeout(() => {
+          overlay.classList.add('active');
+        }, 100);
+      }
+    });
+
+    function closeRejected() {
+      const overlay = document.getElementById('rejectedOverlay');
+      overlay.classList.remove('active');
+      setTimeout(() => overlay.remove(), 400);
+    }
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Commerce Risk Intelligence</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Orbitron:wght@700;900&family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --blue: #5B93F9;
+      --blue-light: #a4bdf6;
+      --blue-dim: rgba(91, 147, 249, 0.15);
+      --blue-border: rgba(91, 147, 249, 0.35);
+      --coral: #ff4444;
+      --teal: #0f766e;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: #0d1117;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .fw-bold {
+      font-family: 'Space Grotesk', sans-serif;
+      letter-spacing: -0.5px;
+    }
+
+    .text-blue {
+      color: var(--blue) !important;
+    }
+
+    .text-coral {
+      color: var(--coral) !important;
+    }
+
+
+    .sidebar {
+      height: 100vh;
+      background: #0d1117;
+      color: white;
+      position: fixed;
+      width: 280px;
+      padding-top: 24px;
+      z-index: 100;
+    }
+
+    .sidebar-brand {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 1.25rem;
+      color: var(--blue);
+      padding: 0 24px;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .sidebar-brand i {
+      font-size: 1.1rem;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      padding: 14px 24px;
+      color: #d1d5db;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar a i {
+      width: 24px;
+      font-size: 1.05rem;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active {
+      background: rgba(91, 147, 249, 0.05);
+      color: #ffffff;
+      border-left-color: var(--blue);
+    }
+
+    .sidebar hr {
+      border-color: rgba(255, 255, 255, 0.1);
+      margin: 20px 0;
+    }
+
+
+    .main {
+      margin-left: 280px;
+      padding: 40px 50px;
+      background: #eef2f6;
+      min-height: 100vh;
+      border-top-left-radius: 32px;
+      border-bottom-left-radius: 32px;
+    }
+
+    .main-container {
+      max-width: 1750px;
+      margin: 0 auto;
+    }
+
+    .card {
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(15, 23, 42, 0.04);
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .curved-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+      overflow: hidden;
+    }
+
+
+    .scan-badge-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+    }
+
+    .scan-type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .badge-ecommerce {
+      border-left: 4px solid var(--blue);
+    }
+
+    .badge-ecommerce i {
+      color: var(--blue);
+    }
+
+    .badge-general {
+      border-left: 4px solid var(--coral);
+    }
+
+    .badge-general i {
+      color: var(--coral);
+    }
+
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 100px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .status-completed {
+      background: var(--blue-dim);
+      color: #0f172a;
+      border: 1px solid var(--blue-border);
+    }
+
+    .status-pending {
+      background: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #cbd5e1;
+    }
+
+    .status-scanning {
+      background: rgba(91, 147, 249, 0.12);
+      color: var(--blue);
+      border: 1px solid rgba(91, 147, 249, 0.3);
+      box-shadow: 0 0 10px rgba(91, 147, 249, 0.15);
+    }
+
+    .status-scanning .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--blue);
+      animation: pulse-blue 1.5s infinite;
+    }
+
+    @keyframes pulse-blue {
+      0% {
+        box-shadow: 0 0 0 0 rgba(91, 147, 249, 0.4);
+      }
+
+      70% {
+        box-shadow: 0 0 0 4px rgba(91, 147, 249, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(91, 147, 249, 0);
+      }
+    }
+
+
+    .badge-prio {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      min-width: 90px;
+      background: #e0e7ff;
+      color: #0f172a;
+      border: 1px solid #a5b4fc;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      transition: all 0.3s ease;
+      cursor: default;
+    }
+
+    .badge-prio.prio-critical:hover {
+      box-shadow: 0 0 14px rgba(220, 38, 38, 0.4);
+      border-color: rgba(220, 38, 38, 0.6);
+      color: #dc2626;
+    }
+
+    .badge-prio.prio-high {
+      color: #0f172a;
+      border-color: #a5b4fc;
+    }
+
+    .badge-prio.prio-high:hover {
+      box-shadow: 0 0 18px rgba(255, 68, 68, 0.6);
+      border-color: rgba(255, 68, 68, 0.8);
+      color: var(--coral);
+    }
+
+    .badge-prio.prio-medium:hover {
+      box-shadow: 0 0 14px rgba(234, 179, 8, 0.4);
+      border-color: rgba(234, 179, 8, 0.6);
+      color: #ca8a04;
+    }
+
+    .badge-prio.prio-low:hover {
+      box-shadow: 0 0 14px rgba(15, 118, 110, 0.4);
+      border-color: rgba(15, 118, 110, 0.6);
+      color: var(--teal);
+    }
+
+
+    .btn-scan-admin {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: #020617;
+      color: var(--blue-light);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 12px 24px;
+      border-radius: 9px;
+      border: 1px solid rgba(91, 147, 249, 0.4);
+      text-decoration: none;
+      letter-spacing: 0.5px;
+      transition: all 0.25s;
+      box-shadow: 0 0 16px rgba(91, 147, 249, 0.15), inset 0 0 12px rgba(91, 147, 249, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-scan-admin:hover {
+      background: #020617;
+      color: #ffffff;
+      border-color: var(--blue);
+      box-shadow: 0 0 28px rgba(91, 147, 249, 0.35), inset 0 0 16px rgba(91, 147, 249, 0.08);
+      transform: translateY(-1px);
+    }
+
+
+    .custom-list-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0;
+    }
+
+    .custom-list-table thead th {
+      background: #f8fafc;
+      color: #475569;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 12px 24px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .custom-list-table tbody tr {
+      background: #ffffff;
+      transition: background 0.2s;
+    }
+
+    .custom-list-table tbody tr:hover {
+      background: #f8fafc;
+    }
+
+    .custom-list-table tbody td {
+      padding: 14px 24px;
+      vertical-align: middle;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .action-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      justify-content: flex-end;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 7px;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      font-size: 12px;
+      text-decoration: none;
+      transition: all 0.2s;
+      color: #64748b;
+    }
+
+    .action-btn-run:hover {
+      background: rgba(22, 163, 74, 0.08);
+      border-color: rgba(22, 163, 74, 0.35);
+      color: #16a34a;
+    }
+
+    .action-btn-findings:hover {
+      background: rgba(2, 132, 199, 0.08);
+      border-color: rgba(2, 132, 199, 0.35);
+      color: #0284c7;
+    }
+
+    .action-btn-report:hover {
+      background: rgba(99, 102, 241, 0.08);
+      border-color: rgba(99, 102, 241, 0.35);
+      color: #6366f1;
+    }
+
+    .action-btn-del:hover {
+      background: rgba(220, 38, 38, 0.08);
+      border-color: rgba(220, 38, 38, 0.35);
+      color: #dc2626;
+    }
+
+    .action-divider {
+      width: 1px;
+      height: 20px;
+      background: #e2e8f0;
+      margin: 0 4px;
+    }
+
+
+    .ecommerce-bar-chart {
+      position: relative;
+      height: 220px;
+      margin-top: 30px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      padding-left: 45px;
+      border-bottom: 2px solid #cbd5e1;
+    }
+
+    .grid-lines {
+      position: absolute;
+      top: 0;
+      left: 45px;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+
+    .grid-line {
+      width: 100%;
+      border-top: 1px dashed #e2e8f0;
+      position: relative;
+    }
+
+    .grid-line span {
+      position: absolute;
+      left: -40px;
+      top: -8px;
+      width: 30px;
+      text-align: right;
+      font-size: 0.65rem;
+      color: #64748b;
+      font-family: 'Fira Code', monospace;
+      font-weight: 600;
+    }
+
+    .bar-wrapper {
+      position: relative;
+      width: 48px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      z-index: 1;
+    }
+
+    .bar-item {
+      width: 100%;
+      border-radius: 6px 6px 0 0;
+      position: relative;
+      cursor: default;
+      transition: filter 0.2s ease, transform 0.2s ease;
+      box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .bar-item:hover {
+      filter: brightness(1.1);
+    }
+
+    .bar-value {
+      position: absolute;
+      top: -28px;
+      width: 100%;
+      text-align: center;
+      font-size: 0.85rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      color: #0f172a;
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      transform: translateY(5px);
+      background: #ffffff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+      pointer-events: none;
+    }
+
+    .bar-wrapper:hover .bar-value {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .bar-title {
+      position: absolute;
+      bottom: -28px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-align: center;
+      white-space: nowrap;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .dist-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 50px;
+      height: 200px;
+      width: 100%;
+    }
+
+    .modern-donut {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .modern-donut::after {
+      content: '';
+      position: absolute;
+      inset: 16px;
+      background: #ffffff;
+      border-radius: 50%;
+    }
+
+    .modern-donut-inner {
+      position: absolute;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .inner-num {
+      font-size: 2.3rem;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1;
+      margin-bottom: 2px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .inner-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .modern-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .m-legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 110px;
+    }
+
+    .m-legend-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #475569;
+    }
+
+    .m-legend-val {
+      font-size: 0.95rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .m-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .mid-row-widget {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    .widget-header {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 20px 24px;
+      position: relative;
+    }
+
+    .widget-body {
+      background: #f8fafc;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      height: 100%;
+    }
+
+
+    .sc-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-radius: 10px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.01);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .sc-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.04);
+    }
+
+    .sc-item.trusted {
+      border-left: 4px solid var(--blue);
+    }
+
+    .sc-item.warning {
+      border-left: 4px solid #f59e0b;
+    }
+
+    .sc-item.danger {
+      border-left: 4px solid var(--coral);
+      background: linear-gradient(90deg, #fff5f5, #ffffff 15%);
+      border-color: #fca5a5;
+    }
+
+    .sc-info {
+      flex: 1;
+      margin-left: 16px;
+    }
+
+    .sc-domain {
+      display: block;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      color: #0f172a;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .sc-type {
+      font-size: 0.8rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .sc-item.danger .sc-domain {
+      color: #b91c1c;
+    }
+
+    .pci-score-container {
+      text-align: center;
+      margin-bottom: 20px;
+      transition: color 0.3s ease;
+    }
+
+    .pci-score-container h2 {
+      font-size: 3.5rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: -2px;
+      line-height: 1;
+    }
+
+    .pci-score-container p {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-top: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .pci-req-item {
+      margin-bottom: 12px;
+    }
+
+    .pci-req-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .pci-req-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      transition: color 0.3s ease;
+    }
+
+    .pci-req-header span:last-child {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+    }
+
+    .pci-req-header.fail {
+      color: var(--coral);
+    }
+
+    .pci-req-header.warn {
+      color: #ea580c;
+    }
+
+    .pci-req-header.pass {
+      color: #8fb4f9;
+    }
+
+    .pci-progress {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .pci-progress-bar {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 1s ease, background 0.3s ease;
+    }
+
+
+    .badge-custom-danger {
+      background: #fff5f5;
+      color: var(--coral);
+      border: 1px solid var(--coral);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.75rem;
+      font-family: 'Space Grotesk', sans-serif;
+      text-transform: uppercase;
+    }
+
+    .scan-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 8, 8, 0.92);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+    }
+
+    .scan-overlay.active {
+      display: flex;
+    }
+
+    .scan-box {
+      background: #121212;
+      border: 1px solid rgba(91, 147, 249, 0.3);
+      border-radius: 16px;
+      padding: 32px;
+      text-align: center;
+      width: 90%;
+      max-width: 440px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .scan-radar {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 20px;
+    }
+
+    .scan-radar-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid rgba(91, 147, 249, 0.15);
+    }
+
+    .scan-radar-ring:nth-child(1) {
+      animation: radar-pulse 2s ease-in-out infinite;
+    }
+
+    .scan-radar-ring:nth-child(2) {
+      animation: radar-pulse 2s ease-in-out 0.5s infinite;
+      inset: 15px;
+    }
+
+    .scan-radar-ring:nth-child(3) {
+      animation: radar-pulse 2s ease-in-out 1s infinite;
+      inset: 30px;
+    }
+
+    .scan-radar-sweep {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, transparent 0deg, transparent 270deg, rgba(91, 147, 249, 0.3) 320deg, rgba(91, 147, 249, 0.7) 360deg);
+      transform-origin: center center;
+      animation: sweep 2s linear infinite;
+    }
+
+    @keyframes sweep {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .scan-radar-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scan-radar-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--blue-light);
+      box-shadow: 0 0 12px var(--blue-light);
+      animation: dot-pulse 1s ease-in-out infinite;
+    }
+
+    @keyframes dot-pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1
+      }
+
+      50% {
+        transform: scale(1.4);
+        opacity: 0.7
+      }
+    }
+
+    .scan-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--blue-light);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .scan-target {
+      font-family: 'Fira Code', monospace;
+      font-size: 1.15rem;
+      color: #ffffff;
+      font-weight: 500;
+      margin-bottom: 20px;
+      word-break: break-all;
+    }
+
+    .scan-progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 100px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .scan-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue), var(--blue-light));
+      border-radius: 100px;
+      width: 0%;
+      animation: progress-fill 10s ease-in-out forwards;
+    }
+
+    @keyframes progress-fill {
+      0% {
+        width: 0%
+      }
+
+      10% {
+        width: 10%
+      }
+
+      30% {
+        width: 40%
+      }
+
+      60% {
+        width: 65%
+      }
+
+      85% {
+        width: 85%
+      }
+
+      100% {
+        width: 100%
+      }
+    }
+
+    .scan-log {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: #a3a3a3;
+      text-align: left;
+      height: 80px;
+      overflow: hidden;
+    }
+
+    .scan-log-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 3px 0;
+      animation: log-appear 0.4s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes log-appear {
+      from {
+        opacity: 0;
+        transform: translateY(6px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .scan-log-line .ok {
+      color: var(--blue);
+      font-weight: 600;
+    }
+
+    .scan-log-line .run {
+      color: var(--blue-light);
+      font-weight: 600;
+    }
+
+    .scan-log-line .warn {
+      color: #FFDE21;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="scan-overlay" id="scanOverlay">
+    <div class="scan-box">
+      <div class="scan-radar">
+        <div class="scan-radar-ring"></div>
+        <div class="scan-radar-ring"></div>
+        <div class="scan-radar-ring"></div>
+        <div class="scan-radar-sweep"></div>
+        <div class="scan-radar-center">
+          <div class="scan-radar-dot"></div>
+        </div>
+      </div>
+      <span class="scan-title">Checkout Integrity Audit</span>
+      <div class="scan-target" id="scanTarget">Initialising...</div>
+      <div class="scan-progress-bar">
+        <div class="scan-progress-fill" id="scanProgressFill"></div>
+      </div>
+      <div class="scan-log" id="scanLog"></div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-brand">
+      <i class="fas fa-shield-alt text-blue"></i> MisconfigLab
+    </div>
+    <a href="/admin" class="active"><i class="fas fa-gauge-high"></i> Dashboard</a>
+    <a href="/findings"><i class="fas fa-bug"></i> Findings</a>
+    <a href="/clients"><i class="fas fa-store"></i> Clients</a>
+    <hr>
+    <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </div>
+
+  <div class="main">
+    <div class="main-container">
+
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold m-0" style="color: #0f172a;">E-Commerce Risk Intelligence</h3>
+        <span class="text-muted fw-medium" style="font-size: 1.05rem;">
+          <i class="fas fa-user-circle me-2 text-blue"></i>{{ current_user.username }}
+        </span>
+      </div>
+
+      <div class="card mb-4 border-0">
+        <div class="card-body p-4">
+          <div class="row align-items-center">
+            <div class="col-md-8">
+              <h5 class="mb-1 fw-bold text-dark">Initiate Storefront Audit</h5>
+              <p class="text-muted mb-0">Audit an e-commerce target for OWASP A02 & PCI-DSS misconfigurations</p>
+            </div>
+            <div class="col-md-4 text-end">
+              {% if requests|length > 0 %}
+              <a href="{{ url_for('run_scan', req_id=requests[0].id) }}" class="btn-scan-admin"
+                onclick="startScanAnimation(event, '{{ requests[0].target }}', this.href)">
+                <i class="fas fa-circle-play"></i> Start Audit
+              </a>
+              {% else %}
+              <button class="btn btn-secondary" disabled>
+                <i class="fas fa-play me-2"></i>No Requests
+              </button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <div class="card p-2 border-0">
+            <div class="card-body">
+              <h6 class="text-muted text-uppercase fw-bold" style="font-size: 0.85rem;">Storefront Audits</h6>
+              <h3 class="fw-bold text-dark">{{ total_scans }}</h3>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-2 border-0">
+            <div class="card-body">
+              <h6 class="text-muted text-uppercase fw-bold" style="font-size: 0.85rem;">Active Vulnerabilities</h6>
+              <h3 class="fw-bold text-dark">{{ findings_detected }}</h3>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-2 border-0">
+            <div class="card-body">
+              <h6 class="text-muted text-uppercase fw-bold" style="font-size: 0.85rem;">Active Merchants</h6>
+              <h3 class="fw-bold text-dark">{{ active_clients }}</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-4">
+        <div class="col-md-7">
+          <div class="card h-100 border-0">
+            <div class="card-body p-4 pb-5">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0 fw-bold text-dark">Severity Breakdown</h6>
+                <span class="text-muted small">Across all completed scans</span>
+              </div>
+
+              {% set fc = chart_critical | default(0) %}
+              {% set fh = chart_high | default(0) %}
+              {% set fm = chart_medium | default(0) %}
+              {% set fl = chart_low | default(0) %}
+
+              {% set max_val = [fc, fh, fm, fl]|max %}
+              {% set max_scale = (max_val + (5 - max_val % 5)) if max_val % 5 != 0 else max_val %}
+              {% if max_scale == 0 %}{% set max_scale = 10 %}{% endif %}
+
+              <div class="ecommerce-bar-chart">
+                <div class="grid-lines">
+                  <div class="grid-line"><span>{{ max_scale }}</span></div>
+                  <div class="grid-line"><span>{{ (max_scale * 0.75) | int }}</span></div>
+                  <div class="grid-line"><span>{{ (max_scale * 0.5) | int }}</span></div>
+                  <div class="grid-line"><span>{{ (max_scale * 0.25) | int }}</span></div>
+                  <div class="grid-line" style="border-top: 1px solid #cbd5e1;"><span>0</span></div>
+                </div>
+                <div class="bar-wrapper">
+                  <div class="bar-item" style="height: {{ (fc / max_scale) * 100 }}%; background: #dc2626;"></div>
+                  <div class="bar-value">{{ fc }}</div>
+                  <div class="bar-title" style="color: #dc2626;">Critical</div>
+                </div>
+                <div class="bar-wrapper">
+                  <div class="bar-item" style="height: {{ (fh / max_scale) * 100 }}%; background: #f97316;"></div>
+                  <div class="bar-value">{{ fh }}</div>
+                  <div class="bar-title" style="color: #ea580c;">High</div>
+                </div>
+                <div class="bar-wrapper">
+                  <div class="bar-item" style="height: {{ (fm / max_scale) * 100 }}%; background: #FFDE21;"></div>
+                  <div class="bar-value">{{ fm }}</div>
+                  <div class="bar-title" style="color: #b48600;">Medium</div>
+                </div>
+                <div class="bar-wrapper">
+                  <div class="bar-item" style="height: {{ (fl / max_scale) * 100 }}%; background: var(--blue);"></div>
+                  <div class="bar-value">{{ fl }}</div>
+                  <div class="bar-title" style="color: var(--blue);">Low</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-5">
+          <div class="card h-100 border-0">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0 fw-bold text-dark">Distribution</h6>
+                <span class="text-muted small">By severity</span>
+              </div>
+              {% set total = fc + fh + fm + fl %}
+              {% if total > 0 %}
+              {% set p_crit = ((fc/total)*360)|int %}
+              {% set p_high = ((fh/total)*360)|int %}
+              {% set p_med = ((fm/total)*360)|int %}
+              {% set p_low = 360 - p_crit - p_high - p_med %}
+              {% else %}
+              {% set p_crit=90 %}{% set p_high=90 %}{% set p_med=90 %}{% set p_low=90 %}
+              {% endif %}
+
+              <div class="dist-container">
+                <div class="modern-donut"
+                  style="background:conic-gradient(#dc2626 0deg {{ p_crit }}deg, #f97316 {{ p_crit }}deg {{ p_crit+p_high }}deg, #FFDE21 {{ p_crit+p_high }}deg {{ p_crit+p_high+p_med }}deg, var(--blue) {{ p_crit+p_high+p_med }}deg 360deg);">
+                  <div class="modern-donut-inner">
+                    <span class="inner-num">{{ total }}</span>
+                    <span class="inner-label">TOTAL</span>
+                  </div>
+                </div>
+                <div class="modern-legend">
+                  <div class="m-legend-item">
+                    <div class="m-legend-left"><span class="m-dot" style="background:#dc2626;"></span> Critical</div>
+                    <div class="m-legend-val">{{ fc }}</div>
+                  </div>
+                  <div class="m-legend-item">
+                    <div class="m-legend-left"><span class="m-dot" style="background:#f97316;"></span> High</div>
+                    <div class="m-legend-val">{{ fh }}</div>
+                  </div>
+                  <div class="m-legend-item">
+                    <div class="m-legend-left"><span class="m-dot" style="background:#FFDE21;"></span> Medium</div>
+                    <div class="m-legend-val">{{ fm }}</div>
+                  </div>
+                  <div class="m-legend-item">
+                    <div class="m-legend-left"><span class="m-dot" style="background:var(--blue);"></span> Low</div>
+                    <div class="m-legend-val">{{ fl }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-4">
+
+        <div class="col-xl-7">
+          <div class="mid-row-widget h-100 mb-0">
+            <div class="widget-header sc-header d-flex flex-column align-items-start gap-2">
+              <div class="w-100 d-flex justify-content-between align-items-start">
+                <div style="position: relative; z-index: 2;">
+                  <h5 class="mb-1 text-dark fw-bold"><i class="fas fa-project-diagram text-blue me-2"></i> Third-Party
+                    Vendor Risk</h5>
+                  <p class="text-muted mb-0" style="font-size: 0.85rem;">DOM analysis of 3rd-party vendor scripts
+                    (pixels, analytics) executing on <code
+                      style="color:var(--blue); font-family: 'Fira Code', monospace;">/checkout</code>.</p>
+                </div>
+                <div style="position: relative; z-index: 2;">
+                  <span class="badge badge-custom-danger"><i class="fas fa-exclamation-triangle me-1"></i> 1 Risk</span>
+                </div>
+              </div>
+
+              <div class="p-3 mt-2 w-100 rounded"
+                style="background: rgba(119, 157, 235, 0.08); border: 1px solid rgba(119, 157, 235, 0.2); position: relative; z-index: 2;">
+                <p class="mb-0" style="font-size: 0.88rem; color: #475569; line-height: 1.6;">
+                  <i class="fas fa-info-circle text-blue me-1"></i> <strong>What is Supply Chain Monitoring?</strong>
+                  E-commerce checkouts load external vendor scripts. If a vendor is hacked, malicious code (Magecart) is
+                  injected into your site to silently steal customer credit cards.
+                </p>
+              </div>
+            </div>
+            <div class="widget-body">
+              <div class="sc-item trusted">
+                <i class="fas fa-shield-check" style="color: var(--blue); font-size: 1.2rem;"></i>
+                <div class="sc-info">
+                  <span class="sc-domain">js.stripe.com/v3/</span>
+                  <span class="sc-type">Payment Gateway · Signature Verified</span>
+                </div>
+              </div>
+              <div class="sc-item warning">
+                <i class="fas fa-info-circle" style="color: #f59e0b; font-size: 1.2rem;"></i>
+                <div class="sc-info">
+                  <span class="sc-domain">connect.facebook.net/en_US/fbevents.js</span>
+                  <span class="sc-type">Marketing Pixel · Exceeds strict CSP</span>
+                </div>
+              </div>
+              <div class="sc-item danger">
+                <i class="fas fa-skull-crossbones" style="color: var(--coral); font-size: 1.2rem;"></i>
+                <div class="sc-info">
+                  <span class="sc-domain">cdn-static-assets-analytics.io/track.js</span>
+                  <span class="sc-type text-danger fw-semibold">Magecart Risk · High probability of Digital
+                    Skimming</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {% set pci = namespace(req3=100, req6=100, req8=100) %}
+        {% for f in recent_findings %}
+        {% set weight = 30 if f.severity == 'Critical' else (20 if f.severity == 'High' else (10 if f.severity ==
+        'Medium' else 5)) %}
+        {% set iss = f.issue | lower %}
+
+        {% if 'req 3' in iss or 'pii' in iss or 'data' in iss %}
+        {% set pci.req3 = pci.req3 - weight %}
+        {% endif %}
+
+        {% if 'req 6' in iss or 'cve' in iss or 'header' in iss or 'version' in iss %}
+        {% set pci.req6 = pci.req6 - weight %}
+        {% endif %}
+
+        {% if 'req 8' in iss or 'mfa' in iss or 'unauth' in iss or 'login' in iss %}
+        {% set pci.req8 = pci.req8 - weight %}
+        {% endif %}
+        {% endfor %}
+
+        {% set r3 = [pci.req3, 0] | max %}
+        {% set r6 = [pci.req6, 0] | max %}
+        {% set r8 = [pci.req8, 0] | max %}
+        {% set pci_total = ((r3 + r6 + r8) / 3) | int %}
+
+        {% set pci_status_color = "#8fb4f9" if pci_total == 100 else "var(--coral)" %}
+        {% set pci_status_text = "Compliant" if pci_total == 100 else "Needs Attention" %}
+
+        <div class="col-xl-5">
+          <div class="mid-row-widget h-100 mb-0 pci-header">
+            <div class="widget-header d-flex flex-column align-items-start gap-2">
+              <div class="w-100" style="position: relative; z-index: 2;">
+                <h5 class="mb-1 text-dark fw-bold">
+                  <i class="fas fa-certificate text-blue me-2"></i> PCI-DSS v4.0 Posture
+                </h5>
+                <p class="text-muted mb-1" style="font-size: 0.85rem;">Compliance readiness based on current scan data.
+                </p>
+
+                <div class="p-3 mt-3 w-100 rounded"
+                  style="background: rgba(119, 157, 235, 0.08); border: 1px solid rgba(119, 157, 235, 0.2);">
+                  <p class="mb-0" style="font-size: 0.88rem; color: #475569; line-height: 1.6;">
+                    <i class="fas fa-info-circle text-blue me-1"></i> <strong>What is PCI-DSS?</strong> The Payment Card
+                    Industry Data Security Standard is mandatory for processing credit cards. Non-compliance risks
+                    severe fines and loss of payment processing capabilities.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="widget-body pt-3">
+
+              <div class="pci-score-container">
+                <h2><span style="color: #000000;">{{ pci_total }}</span><span
+                    style="color: {{ pci_status_color }}; font-size: 1.5rem;">%</span></h2>
+                <p style="color: {{ pci_status_color }}; font-weight: 700;">{{ pci_status_text }}</p>
+              </div>
+
+              <div class="pci-req-list">
+                {% set c3_color = "#8fb4f9" if r3 == 100 else "var(--coral)" %}
+                <div class="pci-req-item">
+                  <div class="pci-req-header">
+                    <div class="d-flex flex-column">
+                      <span style="color: #0f172a;">Req 3: Protect Account Data</span>
+                      <span style="font-size: 0.75rem; color: #64748b; font-weight: 700;">(Encryption, proper storage,
+                        avoiding PII leaks)</span>
+                    </div>
+                    <span><span style="color: #000000;">{{ r3 }}</span><span
+                        style="color: {{ c3_color }};">%</span></span>
+                  </div>
+                  <div class="pci-progress">
+                    <div class="pci-progress-bar" style="background: {{ c3_color }}; width: {{ r3 }}%;"></div>
+                  </div>
+                </div>
+
+                {% set c6_color = "#8fb4f9" if r6 == 100 else "var(--coral)" %}
+                <div class="pci-req-item">
+                  <div class="pci-req-header">
+                    <div class="d-flex flex-column">
+                      <span style="color: #0f172a;">Req 6: Secure Systems & Software</span>
+                      <span style="font-size: 0.75rem; color: #64748b; font-weight: 700;">(Patching CVEs, secure
+                        headers, server hardening)</span>
+                    </div>
+                    <span><span style="color: #000000;">{{ r6 }}</span><span
+                        style="color: {{ c6_color }};">%</span></span>
+                  </div>
+                  <div class="pci-progress">
+                    <div class="pci-progress-bar" style="background: {{ c6_color }}; width: {{ r6 }}%;"></div>
+                  </div>
+                </div>
+
+                {% set c8_color = "#8fb4f9" if r8 == 100 else "var(--coral)" %}
+                <div class="pci-req-item">
+                  <div class="pci-req-header">
+                    <div class="d-flex flex-column">
+                      <span style="color: #0f172a;">Req 8: Identify Users & Access</span>
+                      <span style="font-size: 0.75rem; color: #64748b; font-weight: 700;">(Enforcing MFA, strict admin
+                        authentication)</span>
+                    </div>
+                    <span><span style="color: #000000;">{{ r8 }}</span><span
+                        style="color: {{ c8_color }};">%</span></span>
+                  </div>
+                  <div class="pci-progress">
+                    <div class="pci-progress-bar" style="background: {{ c8_color }}; width: {{ r8 }}%;"></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="curved-card mb-4">
+        <div class="bg-white pt-4 pb-0 px-4 d-flex justify-content-between align-items-center">
+          <div>
+            <h5 class="mb-1 text-dark fw-bold">Merchant Audit Requests</h5>
+            <div class="d-flex align-items-center gap-2 mt-1">
+              {% set pending = requests|selectattr('status','equalto','Pending')|list|length %}
+              {% if pending > 0 %}<span class="badge-status status-pending"
+                style="padding: 2px 8px; font-size: 0.7rem;">{{ pending }} pending</span>{% endif %}
+              <span class="text-muted small">Live requests</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-0 mt-3">
+          <div class="table-responsive">
+            <table class="table table-hover custom-list-table">
+              <thead>
+                <tr>
+                  <th class="ps-4">Merchant</th>
+                  <th>Audit Type</th>
+                  <th>Storefront Target</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Completed Time</th>
+                  <th class="text-end pe-4">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for req in requests %}
+                <tr>
+                  <td class="ps-4">
+                    <div class="d-flex align-items-center gap-2">
+                      <i class="fas fa-user-circle text-secondary fs-5"></i>
+                      <span class="fw-semibold text-dark">{{ req.client_username }}</span>
+                    </div>
+                  </td>
+                  <td>
+                    {% set t = req.template|lower %}
+                    {% set icon = "fas fa-globe text-coral" %}
+                    {% set focus = "Ports · Headers" %}
+                    {% set b_class = "badge-general" %}
+                    {% set title = req.template | title %}
+
+                    {% if "payment & checkout" in t %}
+                    {% set icon = "fas fa-credit-card text-blue" %}
+                    {% set focus = "PCI DSS · TLS · CSP" %}
+                    {% set b_class = "badge-ecommerce" %}
+                    {% set title = "Payment & Checkout" %}
+                    {% elif "customer data" in t %}
+                    {% set icon = "fas fa-users-viewfinder text-blue" %}
+                    {% set focus = "PII Leaks · Unauth APIs" %}
+                    {% set b_class = "badge-ecommerce" %}
+                    {% set title = "Customer Data" %}
+                    {% elif "admin panel" in t %}
+                    {% set icon = "fas fa-user-shield text-blue" %}
+                    {% set focus = "MFA · Access Control" %}
+                    {% set b_class = "badge-ecommerce" %}
+                    {% set title = "Admin Panel" %}
+                    {% elif "cart & api" in t %}
+                    {% set icon = "fas fa-cart-shopping text-blue" %}
+                    {% set focus = "Rate Limits · CORS" %}
+                    {% set b_class = "badge-ecommerce" %}
+                    {% set title = "Cart & API" %}
+                    {% elif "wordpress" in t %}
+                    {% set icon = "fab fa-wordpress text-coral" %}
+                    {% set focus = "Plugins · wp-config" %}
+                    {% set b_class = "badge-general" %}
+                    {% set title = "WordPress" %}
+                    {% elif "docker" in t %}
+                    {% set icon = "fab fa-docker text-coral" %}
+                    {% set focus = "Escapes · Daemons" %}
+                    {% set b_class = "badge-general" %}
+                    {% set title = "Docker Container" %}
+                    {% elif "ssl tls" in t %}
+                    {% set icon = "fas fa-lock text-coral" %}
+                    {% set focus = "Cryptography · Certificates" %}
+                    {% set b_class = "badge-general" %}
+                    {% set title = "SSL/TLS" %}
+                    {% endif %}
+
+                    <div class="scan-badge-wrap">
+                      <div class="scan-type-badge {{ b_class }}">
+                        <i class="{{ icon }}"></i> {{ title }}
+                      </div>
+                      <div class="scan-meta"><span>Focus:</span> {{ focus }}</div>
+                    </div>
+                  </td>
+                  <td class="fw-semibold text-dark" style="font-family:'Fira Code',monospace; font-size:0.85rem;">
+                    {{ req.target }}
+                  </td>
+                  <td>
+                    {% set p_lower = req.priority|lower %}
+                    {% if p_lower == "critical" %}
+                    <span class="badge-prio prio-critical">Critical</span>
+                    {% elif p_lower == "high" %}
+                    <span class="badge-prio prio-high">High</span>
+                    {% elif p_lower == "medium" %}
+                    <span class="badge-prio prio-medium">Medium</span>
+                    {% else %}
+                    <span class="badge-prio prio-low">{{ req.priority }}</span>
+                    {% endif %}
+                  </td>
+                  <td id="status-{{ req.id }}">
+                    {% if req.status == "Completed" %}
+                    <span class="badge-status status-completed"><i class="fas fa-check-circle"></i> Completed</span>
+                    {% elif req.status == "Scan In Progress" %}
+                    <span class="badge-status status-scanning"><span class="dot"></span> Scanning...</span>
+                    {% else %}
+                    <span class="badge-status status-pending"><i class="fas fa-clock"></i> Pending</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-nowrap text-muted small fw-medium">
+                    {% if req.status == "Completed" and req.completed_at %}
+                    <i class="far fa-clock me-1"></i> {{ req.completed_at.strftime('%b %d, %Y - %I:%M %p') }}
+                    {% else %}
+                    -
+                    {% endif %}
+                  </td>
+                  <td class="pe-4">
+                    <div class="action-group">
+                      <a href="{{ url_for('run_scan', req_id=req.id) }}" class="action-btn action-btn-run"
+                        title="Run Scan" onclick="startScanAnimation(event, '{{ req.target }}', this.href)">
+                        <i class="fas fa-play"></i>
+                      </a>
+
+                      <div class="action-divider"></div>
+
+                      {% if req.status == "Completed" %}
+                      <a href="{{ url_for('view_findings', req_id=req.id) }}" class="action-btn action-btn-findings"
+                        title="View Findings">
+                        <i class="fas fa-eye"></i>
+                      </a>
+                      <a href="{{ url_for('generate_report', req_id=req.id) }}" class="action-btn action-btn-report"
+                        title="Generate Report">
+                        <i class="fas fa-file-alt"></i>
+                      </a>
+                      {% else %}
+                      <span class="text-muted mx-1"
+                        style="font-size:0.7rem;font-family:'Fira Code',monospace;">awaiting</span>
+                      {% endif %}
+
+                      <div class="action-divider"></div>
+
+                      <a href="{{ url_for('delete_request', req_id=req.id) }}" class="action-btn action-btn-del"
+                        title="Delete" onclick="return confirm('Delete this scan request?')">
+                        <i class="fas fa-trash"></i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="curved-card">
+        <div class="bg-white pt-4 pb-0 px-4 d-flex justify-content-between align-items-center">
+          <h5 class="mb-1 text-dark fw-bold">Recent E-Commerce Exposures</h5>
+          <a href="/findings" class="text-decoration-none fw-semibold"
+            style="color: var(--blue); font-size: 0.85rem; font-family: 'Space Grotesk', sans-serif;">View All <i
+              class="fas fa-arrow-right ms-1"></i></a>
+        </div>
+        <div class="p-0 mt-3 findings-container">
+          <table class="table table-hover custom-list-table mb-0">
+            <thead>
+              <tr>
+                <th class="ps-4">Identified Risk</th>
+                <th>Storefront Target</th>
+                <th>Severity</th>
+                <th class="pe-4">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for f in recent_findings[:3] %}
+              {% set text_lower = (f.template | default('') ~ ' ' ~ f.issue | default('')) | lower %}
+              {% set f_icon_color = "text-coral" %}
+              {% if "payment" in text_lower or "checkout" in text_lower or "customer" in text_lower or "pii" in
+              text_lower or "admin" in text_lower or "mfa" in text_lower or "cart" in text_lower or "api" in text_lower
+              %}
+              {% set f_icon_color = "text-blue" %}
+              {% endif %}
+              <tr>
+                <td class="ps-4">
+                  <i class="fas fa-bug me-2 {{ f_icon_color }}"></i>
+                  <span class="fw-medium text-dark">{{ f.issue }}</span>
+                </td>
+                <td style="font-family:'Fira Code',monospace; font-size:0.8rem;" class="text-muted">
+                  {{ f.target }}
+                </td>
+                <td>
+                  {% if f.severity=="Critical" %}
+                  <span class="badge-prio prio-critical">Critical</span>
+                  {% elif f.severity=="High" %}
+                  <span class="badge-prio prio-high">High</span>
+                  {% elif f.severity=="Medium" %}
+                  <span class="badge-prio prio-medium">Medium</span>
+                  {% else %}
+                  <span class="badge-prio prio-low">Low</span>
+                  {% endif %}
+                </td>
+                <td class="pe-4">
+                  <span class="badge-status status-pending" style="font-size:0.65rem;">Open</span>
+                </td>
+              </tr>
+              {% endfor %}
+              {% if recent_findings|length == 0 %}
+              <tr>
+                <td colspan="4" class="text-center text-muted py-4">No findings yet — run an audit to see results here.
+                </td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <script>
+    const logLines = [
+      { icon: 'run', text: 'Auditing for Magecart skimming risks...' },
+      { icon: 'ok', text: 'Checkout encryption validated (TLS)...' },
+      { icon: 'run', text: 'Scanning for unauthenticated customer PII leak...' },
+      { icon: 'run', text: 'Testing cart logic for inventory hoarding vulnerability...' },
+      { icon: 'warn', text: 'Assessing compliance with PCI DSS requirements...' },
+      { icon: 'ok', text: 'Mapping deployment to best practices...' },
+      { icon: 'run', text: 'Saving findings and recommendations...' },
+    ];
+
+    function startScanAnimation(event, target, url) {
+      event.preventDefault();
+      const overlay = document.getElementById('scanOverlay');
+      const targetEl = document.getElementById('scanTarget');
+      const logEl = document.getElementById('scanLog');
+      const fill = document.getElementById('scanProgressFill');
+
+      targetEl.textContent = target || 'Loading...';
+      logEl.innerHTML = '';
+      fill.style.animation = 'none';
+      fill.offsetHeight;
+      fill.style.animation = 'progress-fill 10s ease-in-out forwards';
+      overlay.classList.add('active');
+
+      logLines.forEach((line, i) => {
+        setTimeout(() => {
+          const div = document.createElement('div');
+          div.className = 'scan-log-line';
+          const icon = line.icon === 'ok' ? '✔' : line.icon === 'warn' ? '⚠' : '›';
+          div.innerHTML = `<span class="${line.icon}">${icon}</span><span>${line.text}</span>`;
+          logEl.appendChild(div);
+          if (logEl.children.length > 4) logEl.removeChild(logEl.firstChild);
+        }, i * 1400);
+      });
+
+      setTimeout(() => {
+        window.location.href = url;
+      }, 10000);
+    }
+  </script>
+</body>
+
+</html>
